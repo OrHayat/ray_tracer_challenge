@@ -1,0 +1,44 @@
+@PACKAGE_INIT@
+
+include(${CMAKE_CURRENT_LIST_DIR}/libigl-export.cmake)
+
+# Check if Eigen3 target is avaiable, if not try to locate it
+# with find_package.
+message(STATUS "[RTC] Looking for Eigen3")
+if (NOT TARGET Eigen3::Eigen)
+  # Try if Eigen3 can be found with find_package
+  find_package(Eigen3 CONFIG REQUIRED)
+endif()
+
+# Check if glm target is avaiable, if not try to locate it
+# with find_package.
+message(STATUS "[RTC] Looking for glm")
+if (NOT TARGET glm::glm)
+  # Try if glm can be found with find_package
+  find_package(glm CONFIG REQUIRED)
+endif()
+
+
+
+if (TARGET rtc::core)
+  if (TARGET Eigen3::Eigen)
+    if (TARGET glm::glm)
+    # Inject dependency
+    set_target_properties(rtc::core PROPERTIES INTERFACE_LINK_LIBRARIES Eigen3::Eigen glm::glm)
+    set(libigl_core_FOUND TRUE)
+    endif()
+  endif()
+endif()
+
+if (TARGET rtc::common)
+  if (TARGET Eigen3::Eigen)
+    if (TARGET glm::glm)
+    # Inject dependency
+    set_target_properties(rtc::common PROPERTIES INTERFACE_LINK_LIBRARIES Eigen3::Eigen glm::glm)
+    set(rtc_common_FOUND TRUE)
+    endif()
+  endif()
+endif()
+
+check_required_components(rtc)
+
