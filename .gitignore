@@ -44,23 +44,4 @@ documentation/*.aux
 documentation/*.log
 documentation/*.out
 lib
-libigl.zip
 optional/build
-python/.idea
-python/.ipynb_checkpoints
-python/__pycache__
-python/build
-python/build2
-python/build3
-python/build4
-python/builddebug
-python/buildstatic
-python/py_igl/todo
-python/py_igl/todo
-python/scripts/generated
-scripts/change_name.sh
-site/
-syntax: glob
-tests/bin
-tests/build
-tests/data
