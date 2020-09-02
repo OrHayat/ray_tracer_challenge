@@ -58,6 +58,17 @@ function(rtc_download_glm)
 			)
 endfunction()
 
+##opencv
+
+function(rtc_download_opencv)
+	rtc_download_project(opencv
+			GIT_REPOSITORY https://github.com/opencv/opencv.git
+			GIT_TAG      4.4.0
+			)
+endfunction()
+
+
+
 ## doctest
 function(rtc_download_doctest)
 	rtc_download_project(doctest

@@ -121,21 +121,29 @@ if(NOT TARGET glm::glm)
 endif()
 
 target_link_libraries(rtc_common INTERFACE glm::glm)
+################################################################################
 
+##opencv
 #
-#
-#set(GLM_DIR "${RTC_EXTERNAL}/glm")
-#if(NOT TARGET glm)
-#  # call this "lib-cork" instead of "cork", otherwise cmake gets confused about
-#  # "cork" executable
-#  rtc_download_glm()
-#  add_subdirectory("${GLM_DIR}" "glm")
+#if(NOT TARGET glm::glm)todo
+#  rtc_download_opencv()
+#  add_library(rtc_opencv INTERFACE)
+#  target_include_directories(rtc_opencv SYSTEM INTERFACE
+#          $<BUILD_INTERFACE:${RTC_EXTERNAL}/glm>
+#          $<INSTALL_INTERFACE:include>
+#          )
+#  set_property(TARGET rtc_glm PROPERTY EXPORT_NAME glm::glm)
+#  add_library(glm::glm ALIAS rtc_glm)
 #endif()
-#target_include_directories(rtc_glm ${RTC_SCOPE} glm)
-##target_include_directories(igl_cork ${IGL_SCOPE} "${CORK_DIR}/src")
+#
 #target_link_libraries(rtc_common INTERFACE glm::glm)
+#
+#
+#
+#
+#
 
-#######################################################################################################################
+################################################################################
 set(DOCTEST_DIR "${RTC_EXTERNAL}/doctest")
 if(NOT TARGET doctest)
   # call this "lib-cork" instead of "cork", otherwise cmake gets confused about

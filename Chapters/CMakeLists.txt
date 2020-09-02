@@ -26,6 +26,7 @@ endif()
 
 ### Choose which chapters to compile
 option(TUTORIALS_CHAPTER1 "Compile chapter 1" ON)
+option(TUTORIALS_CHAPTER2 "Compile chapter 2" ON)
 
 
 
@@ -39,4 +40,7 @@ target_include_directories(tutorials INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 # Chapter 1
 if(TUTORIALS_CHAPTER1)
     add_subdirectory("Chapter1")
+endif()
+if(TUTORIALS_CHAPTER2)
+    add_subdirectory("Chapter2")
 endif()
