@@ -60,10 +60,9 @@ endfunction()
 
 ##opencv
 
-function(rtc_download_opencv)
-	rtc_download_project(opencv
-			GIT_REPOSITORY https://github.com/opencv/opencv.git
-			GIT_TAG      4.4.0
+function(rtc_download_stb)
+	rtc_download_project(stb
+			GIT_REPOSITORY https://github.com/nothings/stb.git
 			)
 endfunction()
 

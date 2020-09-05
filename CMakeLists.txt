@@ -42,11 +42,11 @@ if(RTC_BUILD_CHAPTERS)
     add_subdirectory(Chapters)
 endif()
 
-if(RTC_BUILD_TESTS)
-    include(CTest)
-    enable_testing()
-    add_subdirectory(tests)
-endif()
+#if(RTC_BUILD_TESTS)
+#    include(CTest)
+#    enable_testing()
+#    add_subdirectory(tests)
+#endif()
 #
 if(RTC_TOPLEVEL_PROJECT)
     # Set folders for Visual Studio/Xcode

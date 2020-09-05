@@ -123,9 +123,23 @@ endif()
 target_link_libraries(rtc_common INTERFACE glm::glm)
 ################################################################################
 
-##opencv
+##stb
 #
-#if(NOT TARGET glm::glm)todo
+
+if (NOT TARGET stb::stb)
+  rtc_download_stb()
+    add_library(rtc_stb INTERFACE)
+    target_include_directories(rtc_stb SYSTEM INTERFACE
+            $<BUILD_INTERFACE:${RTC_EXTERNAL}/stb>
+            $<INSTALL_INTERFACE:include>
+            )
+    set_property(TARGET rtc_stb PROPERTY EXPORT_NAME stb::stb)
+    add_library(stb::stb ALIAS rtc_stb)
+endif()
+target_link_libraries(rtc_common INTERFACE stb::stb)
+
+
+  #if(NOT TARGET glm::glm)todo
 #  rtc_download_opencv()
 #  add_library(rtc_opencv INTERFACE)
 #  target_include_directories(rtc_opencv SYSTEM INTERFACE
@@ -270,70 +284,70 @@ function(install_dir_files dir_name)
 endfunction()
 
 #################################################################################
+#
+#include(GNUInstallDirs)
+#include(CMakePackageConfigHelpers)
+#
+#if(TARGET rtc_eigen)
+#  set(RTC_EIGEN rtc_eigen)
+#else()
+#  set(RTC_EIGEN)
+#  message(WARNING "Trying to export RTC targets while using an imported target for Eigen.")
+#endif()
+#
+#if(TARGET rtc_glm)
+#  set(RTC_GLM rtc_glm)
+#else()
+#  set(RTC_GLM)
+#  message(WARNING "Trying to export RTC targets while using an imported target for glm.")
+#endif()
 
-include(GNUInstallDirs)
-include(CMakePackageConfigHelpers)
-
-if(TARGET rtc_eigen)
-  set(RTC_EIGEN rtc_eigen)
-else()
-  set(RTC_EIGEN)
-  message(WARNING "Trying to export RTC targets while using an imported target for Eigen.")
-endif()
-
-if(TARGET rtc_glm)
-  set(RTC_GLM rtc_glm)
-else()
-  set(RTC_GLM)
-  message(WARNING "Trying to export RTC targets while using an imported target for glm.")
-endif()
-
-
-# Install and export core library
-install(
-  TARGETS
-    rtc
-    rtc_common
-    ${RTC_GLM}
-    ${RTC_EIGEN}
-  EXPORT rtc-export
-  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-)
-export(
-  TARGETS
-    rtc
-    rtc_common
-    ${RTC_GLM}
-    ${RTC_EIGEN}
-  FILE rtc-export.cmake
-)
-
-# Install headers for core library
-install_dir_files(core)
-install_dir_files(copyleft)
-
-# Write package configuration file
-configure_package_config_file(
-        ${CMAKE_CURRENT_LIST_DIR}/RTC-config.cmake.in
-  ${CMAKE_BINARY_DIR}/RTC-config.cmake
-  INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/libigl/cmake
-)
-install(
-  FILES
-    ${CMAKE_BINARY_DIR}/rtc-config.cmake
-  DESTINATION
-    ${CMAKE_INSTALL_DATADIR}/rtc/cmake
-)
-
-# Write export file
-export(EXPORT rtc-export
-  FILE "${CMAKE_BINARY_DIR}/rtc-export.cmake"
-)
-install(EXPORT rtc-export DESTINATION ${CMAKE_INSTALL_DATADIR}/rtc/cmake FILE rtc-export.cmake)
-
-
-export(PACKAGE rtc)
-
+#
+## Install and export core library
+#install(
+#  TARGETS
+#    rtc
+#    rtc_common
+#    ${RTC_GLM}
+#    ${RTC_EIGEN}
+#  EXPORT rtc-export
+#  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+#  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+#  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#)
+#export(
+#  TARGETS
+#    rtc
+#    rtc_common
+#    ${RTC_GLM}
+#    ${RTC_EIGEN}
+#  FILE rtc-export.cmake
+#)
+#
+## Install headers for core library
+#install_dir_files(core)
+#install_dir_files(copyleft)
+#
+## Write package configuration file
+#configure_package_config_file(
+#        ${CMAKE_CURRENT_LIST_DIR}/RTC-config.cmake.in
+#  ${CMAKE_BINARY_DIR}/RTC-config.cmake
+#  INSTALL_DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/libigl/cmake
+#)
+#install(
+#  FILES
+#    ${CMAKE_BINARY_DIR}/rtc-config.cmake
+#  DESTINATION
+#    ${CMAKE_INSTALL_DATADIR}/rtc/cmake
+#)
+#
+## Write export file
+#export(EXPORT rtc-export
+#  FILE "${CMAKE_BINARY_DIR}/rtc-export.cmake"
+#)
+#install(EXPORT rtc-export DESTINATION ${CMAKE_INSTALL_DATADIR}/rtc/cmake FILE rtc-export.cmake)
+#
+#
+#export(PACKAGE rtc)
+#

@@ -6,7 +6,6 @@
 #include <shared/projectile.hpp>
 #include <glm/glm.hpp>
 #include <iostream>
-
 int main(int argc, char** argv)
 {
     glm::vec3 starting_pos(0.0f,1,0);
@@ -19,7 +18,7 @@ int main(int argc, char** argv)
     std::cout<<"tick "<<tick<<":["<<p.position.x<<","<<p.position.y<<","<<p.position.z<<"]"<<std::endl;
         while(p.position.y>0)
         {
-            p=p.tick(env);
+            p.tick_(env);
             tick++;
             std::cout<<"tick "<<tick<<":["<<p.position.x<<","<<p.position.y<<","<<p.position.z<<"]"<<std::endl;
         }
