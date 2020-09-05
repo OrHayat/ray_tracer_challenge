@@ -19,14 +19,16 @@ struct  Canvas
     T* data;
     Canvas(int width,int height):height(height),width(width),data(new T[width*height]){
         std::cout<<"width="<<width<<"height="<<height<<std::endl;
-        stride[0]=height;
+        stride[0]=width;
         stride[1]=1;
     }
-    void set_pixel(T item,int row_id,int col_id)
+    void set_pixel(T item,int x,int y)
     {
-        data[row_id*stride[0]+col_id*stride[1]]=item;
+        y=height-y;
+        printf("setting x=%d,y=%d\n",x,y);
+        data[y*stride[0]+x*stride[1]]=item;
     }
-    T get_pixel(int i,int j)
+    T get_pixel(int x,int y)
     {
         return data[i*stride[0]+j*stride[1]];//=item;
     }
