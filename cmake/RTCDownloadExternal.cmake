@@ -58,7 +58,7 @@ function(rtc_download_glm)
 			)
 endfunction()
 
-##opencv
+##stb
 
 function(rtc_download_stb)
 	rtc_download_project(stb

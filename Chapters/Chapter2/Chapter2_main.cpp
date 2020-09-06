@@ -45,6 +45,5 @@ int main(int argc, char** argv)
     int x=stbi_write_bmp("./output123.bmp",canvas.width,canvas.height,3,canvas.data);
 //    int x=stbi_write_jpg("./outputtest111.jpg:",canvas.width,canvas.height,3,canvas.data,900);
     std::cout<<"foo";
-//    writeppm(canvas,"./output.ppm");
     return 0;
 }

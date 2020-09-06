@@ -139,23 +139,6 @@ endif()
 target_link_libraries(rtc_common INTERFACE stb::stb)
 
 
-  #if(NOT TARGET glm::glm)todo
-#  rtc_download_opencv()
-#  add_library(rtc_opencv INTERFACE)
-#  target_include_directories(rtc_opencv SYSTEM INTERFACE
-#          $<BUILD_INTERFACE:${RTC_EXTERNAL}/glm>
-#          $<INSTALL_INTERFACE:include>
-#          )
-#  set_property(TARGET rtc_glm PROPERTY EXPORT_NAME glm::glm)
-#  add_library(glm::glm ALIAS rtc_glm)
-#endif()
-#
-#target_link_libraries(rtc_common INTERFACE glm::glm)
-#
-#
-#
-#
-#
 
 ################################################################################
 set(DOCTEST_DIR "${RTC_EXTERNAL}/doctest")
