@@ -36,7 +36,6 @@ if(RTC_USE_STATIC_LIBRARY)
 else()
   set(RTC_SCOPE INTERFACE)
 endif()
-
 # Download and update 3rdparty libraries
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR})
 include(RTCDownloadExternal)

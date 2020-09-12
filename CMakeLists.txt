@@ -41,14 +41,14 @@ if(RTC_BUILD_CHAPTERS)
     message("compiling rtc chapters")
     add_subdirectory(Chapters)
 endif()
-
-#if(RTC_BUILD_TESTS)
-#    include(CTest)
-#    enable_testing()
-#    add_subdirectory(tests)
-#endif()
 #
-if(RTC_TOPLEVEL_PROJECT)
-    # Set folders for Visual Studio/Xcode
-    igl_set_folders()
+if(RTC_BUILD_TESTS)
+#    include(CTest)
+    enable_testing()
+    add_subdirectory(tests)
 endif()
+#
+#if(RTC_TOPLEVEL_PROJECT)
+#    # Set folders for Visual Studio/Xcode
+#    igl_set_folders()
+#endif()

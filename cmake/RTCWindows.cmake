@@ -1,6 +1,6 @@
 if(MSVC)
-	option(IGL_STATIC_RUNTIME "Use libigl with the static MSVC runtime." OFF)
-	if(IGL_STATIC_RUNTIME)
+	option(RTC_STATIC_RUNTIME "Use RTC with the static MSVC runtime." OFF)
+	if(RTC_STATIC_RUNTIME)
 		message(STATUS "MSVC -> forcing use of statically-linked runtime.")
 		foreach(config ${CMAKE_CONFIGURATION_TYPES})
 			string(TOUPPER ${config} config)

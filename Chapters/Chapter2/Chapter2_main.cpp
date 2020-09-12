@@ -33,7 +33,7 @@ int main(int argc, char** argv)
 //        //xyz
         glm::ivec2 canvas_pos_i=glm::vec2((int)canvas_pos.x,(int)canvas_pos.y);
 //        //xy
-        canvas.set_pixel(col,canvas_pos_i.x,canvas_pos_i.y);
+        canvas.set_pixel(canvas_pos_i.x,canvas_pos_i.y,col);
 
 //        canvas.data[canvas_pos_i.y*canvas.width+canvas_pos_i.x]=col;
         printf("position at tick %d was [%d,%d]\n",time,canvas_pos_i.x,canvas_pos_i.y);
