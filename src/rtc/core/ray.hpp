@@ -9,9 +9,13 @@
 
 typedef struct Ray//:public colider
 {
+    union {
+        glm::vec3 pos;
+        glm::vec3 origin;
+    };
     glm::vec3 dir;
-    glm::vec3 pos;
-    Ray(glm::vec3 dir,glm::vec3 pos):dir(glm::normalize(dir)),pos(pos)
-    {}
+    Ray(glm::vec3 pos,glm::vec3 dir):pos(pos),dir(glm::normalize(dir))
+    {};
+    glm::vec3 operator()(float t){ return pos+dir*t;}
 }Ray;
 #endif //RAY_TRACER_RAY_HPP
