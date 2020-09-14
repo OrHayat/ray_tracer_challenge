@@ -111,15 +111,15 @@ TEST_SUITE("ray")
                 {
                     THEN("number of intersections is 2")
                     {
-                        REQUIRE_EQ(d.positions.size(),2);
+                        REQUIRE_EQ(d.t.size(),2);
                     }
                     AND_THEN("first intersction is at (0,0,-1)")
                     {
-                        REQUIRE_EQ(d.positions[0],glm::vec3(0,0,-1));
+                        REQUIRE_EQ(r(d.t[0]),glm::vec3(0,0,-1));
                     }
                     AND_THEN("second intersction is at (0,0,1)")
                     {
-                        REQUIRE_EQ(d.positions[1],glm::vec3(0,0,1));
+                        REQUIRE_EQ(r(d.t[1]),glm::vec3(0,0,1));
                     }
                     //AND_THEN
                 }
