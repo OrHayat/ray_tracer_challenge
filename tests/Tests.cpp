@@ -121,7 +121,27 @@ TEST_SUITE("ray")
                     {
                         REQUIRE_EQ(r(d.t[1]),glm::vec3(0,0,1));
                     }
-                    //AND_THEN
+                }
+            }
+        }
+    }
+
+
+    SCENARIO("A ray miss a sphere")
+    {
+                GIVEN("r=Ray(0,10,-5),(0,0,1))")
+        {
+                    GIVEN("s=sphere()")
+            {
+                ray r(glm::vec3(0, 10, -5), glm::vec3(0, 0, 1));
+                sphere s;
+                collision_data d=s.collide(r);
+                        WHEN("d=s.intersect(r)")
+                {
+                            THEN("number of intersections is 0")
+                    {
+                                REQUIRE_EQ(d.t.size(),0);
+                    }
                 }
             }
         }
