@@ -7,6 +7,6 @@
 #include <rtc/core/collision_data.hpp>
 #include <rtc/core/ray.hpp>
 struct shape{
-    virtual collision_data collide(Ray r)=0;
+    virtual collision_data collide(ray r)=0;
 };
 #endif //RAY_TRACER_SHAPE_HPP

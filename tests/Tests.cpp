@@ -4,6 +4,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 
 #include <rtc/core/ray.hpp>
+#include <rtc/core/collision_data.hpp>
+#include <rtc/core/sphere.hpp>
 #include <doctest/doctest.h>
 
 #define  GLM_ENABLE_EXPERIMENTAL
@@ -57,7 +59,7 @@ TEST_SUITE("ray")
 
                 WHEN("r=Ray(origin.direction)")
                 {
-                    Ray r(origin,direction);
+                    ray r(origin,direction);
                     THEN("r.origin==origin")
                     {
                         REQUIRE_EQ(r.pos,origin);
@@ -72,13 +74,11 @@ TEST_SUITE("ray")
         }
     }
 
-
-
     SCENARIO("Computing points from a distance")
     {
         GIVEN("r=Ray(2,3,4),(1,0,0))")
         {
-            Ray r(glm::vec3(2,3,4),glm::vec3(1,0,0));
+            ray r(glm::vec3(2,3,4),glm::vec3(1,0,0));
             THEN("position at t=0 is (2,3,4)")
             {
                 REQUIRE_EQ(r(0),glm::vec3(2.0f,3.0f,4.0f));
@@ -94,6 +94,35 @@ TEST_SUITE("ray")
                     THEN("position at t=2.5 is (3,3,4)")
             {
                         REQUIRE_EQ(r(2.5),glm::vec3(4.5,3.0f,4.0f));
+            }
+        }
+    }
+
+    SCENARIO("A ray intersect with sphere at 2 points")
+    {
+        GIVEN("r=Ray(0,0,-5),(0,0,1))")
+        {
+            GIVEN("s=sphere()")
+            {
+                ray r(glm::vec3(0, 0, -5), glm::vec3(0, 0, 1));
+                sphere s;
+                collision_data d=s.collide(r);
+                WHEN("d=s.intersect(r)")
+                {
+                    THEN("number of intersections is 2")
+                    {
+                        REQUIRE_EQ(d.positions.size(),2);
+                    }
+                    AND_THEN("first intersction is at (0,0,-1)")
+                    {
+                        REQUIRE_EQ(d.positions[0],glm::vec3(0,0,-1));
+                    }
+                    AND_THEN("second intersction is at (0,0,1)")
+                    {
+                        REQUIRE_EQ(d.positions[1],glm::vec3(0,0,1));
+                    }
+                    //AND_THEN
+                }
             }
         }
     }
