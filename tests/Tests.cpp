@@ -62,13 +62,11 @@ TEST_SUITE("ray")
                     {
                         REQUIRE_EQ(r.pos,origin);
                     }
-
                     AND_THEN("r.direction==direction after normalization")
                     {
                         REQUIRE_EQ(r.dir,glm::normalize(direction));
                     }
 //                    std::cout<<glm::to_string(direction)<<std::endl;
-                    std::cout<<direction<<std::endl;
                 }
             }
         }

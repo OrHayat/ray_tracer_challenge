@@ -6,7 +6,6 @@
 #define RAY_TRACER_RAY_HPP
 
 #include <glm/glm.hpp>
-
 typedef struct Ray//:public colider
 {
     union {
