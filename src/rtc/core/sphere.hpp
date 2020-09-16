@@ -19,16 +19,14 @@ struct sphere:shape{
         //x1x,x=(-b(+,-)sqrt(b^2-4ac))/2a when dot(a,a)=1 and b=2*dot(r.dir,sphere to origin) then=x1,x2=-b(+,-)sqrt(b^2-c)
         float b=glm::dot((r.dir),(r.origin-center));
         float c=glm::dot((r.origin-center),(r.origin-center))-radius*radius;
-        collision_data res;
+        collision_data res(*this);
         if (c > 0.0f && b > 0.0f) return res;
         float disc=b*b-c;
-
         if(disc<0)
         {
             return res;
         }
         disc=std::sqrt(disc);
-
         res.t.push_back((-b-disc));
         res.t.push_back((-b+disc));
         return res;
