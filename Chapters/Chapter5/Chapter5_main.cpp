@@ -28,7 +28,12 @@ int main(int argc, char** argv)
     sphere_->ka=glm::vec4(1.0f,1.0,0,1.0f);
     s.objects.push_back(sphere_);
     Canvas<glm::vec3> can= s.render();
-    int x=stbi_write_bmp("./output1234.bmp",can.width,can.height,3,can.data);
+    Canvas<glm::u8vec3> res(can.width,can.height);
+//    res.data=(glm::u8vec3 *)(can.data);
+    for (int i = 0; i <res.width*res.height ; ++i) {
+        res.data[i]=can.data[i];
+    }
+    int x=stbi_write_bmp("./output1234.bmp",res.width,res.height,3,res.data);
     printf("x=%d\n",x);
 
     return 0;

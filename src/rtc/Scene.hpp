@@ -12,7 +12,6 @@
 #include <iostream>
 #include <rtc/Camera.hpp>
 #include <rtc/Canvas.hpp>
-
 struct Scene {
     std::vector<shape*> objects;
     std::vector<Camera>cameras;
@@ -48,6 +47,7 @@ struct Scene {
     }
     Canvas<glm::vec3> render()
     {
+        int nonzeros_pixels=0;
         std::cout<<"selected camera is"<<selected_camera<<"out of"<<cameras.size()<<"cameras"<<std::endl;
         Canvas<glm::vec3> res(cameras[selected_camera].image_width,cameras[selected_camera].image_height);
         for(uint32_t x=0;x<cameras[selected_camera].image_width;x++)
@@ -57,13 +57,16 @@ struct Scene {
 //                std::cout<<"x="<<x<<" ,y= "<<y<<std::endl;
                 glm::vec3 tmp=render_block(x,y,1,1,0);
                 if(tmp.x!=0||tmp.y!=0||tmp.z!=0) {
+                    nonzeros_pixels++;
 //                    tmp=glm::clamp(tmp*255.0f,glm::vec3(0.0f),glm::vec3(255.0f));
 //                    std::cout << "vec3(" << tmp.x << "," << tmp.y << "," << tmp.z << ")" << std::endl;
                 }
                 res.set_pixel(x,y,glm::clamp(tmp*255.0f,glm::vec3(0.0f),glm::vec3(255.0f)));
             }
         }
-        res.draw_circle(glm::ivec2(50,50),14,glm::vec3(255.0f,0,0));
+//        res.draw_circle(glm::ivec2(50,50),14,glm::vec3(255.0f,0,0));
+        std::cout<<"nonzero_pixels"<<nonzeros_pixels<<std::endl;
+
         return res;
     }
 //     Options &options,

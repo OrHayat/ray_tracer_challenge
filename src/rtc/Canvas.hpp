@@ -28,11 +28,17 @@ struct  Canvas
         delete [] this->data;
         this->data= nullptr;
     }
-    Canvas(const Canvas& other):height(other.height),width(other.width),data(new T[other.width*other.height]){
-        std::cout<<"called copy constrctur"<<std::endl;
-        std::memcpy(this->data,other.data,sizeof(other.data));
+    Canvas(const Canvas<T>& other):height(other.height),width(other.width),data(new T[other.width*other.height])
+    {
         stride[0]=other.stride[0];
         stride[1]=other.stride[1];
+        std::cout<<"called copy constrctur"<<std::endl;
+        for(int i=0;i<other.width*other.height;i++)
+        {
+            this->data[i]=T(other.data[i]);
+        }
+//        std::memcpy(this->data,other.data,sizeof(other.data));
+
     }
     Canvas & operator=(const Canvas & other)
     {
@@ -56,7 +62,7 @@ struct  Canvas
 //        printf("setting x=%d,y=%d\n",x,y);
         data[y*stride[0]+x*stride[1]]=item;
     }
-    T get_pixel(int x,int y)
+    T get_pixel(int x,int y)const
     {
         return data[y*stride[0]+x*stride[1]];
     }
