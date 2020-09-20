@@ -13,8 +13,8 @@ typedef struct ray//:public colider
         glm::vec3 origin;
     };
     glm::vec3 dir;
-    ray(glm::vec3 pos,glm::vec3 dir):pos(pos),dir(glm::normalize(dir))
-    {};
+    ray(glm::vec3 pos,glm::vec3 dir):pos(pos),dir(glm::normalize(dir)){};
+    ray(const ray& other):pos(other.pos),dir(other.dir){};
     glm::vec3 operator()(float t){ return pos+dir*t;}
 }ray;
 #endif //RAY_TRACER_RAY_HPP

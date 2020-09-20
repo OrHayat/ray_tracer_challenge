@@ -195,7 +195,7 @@ function(compile_rtc_module module_dir)
   else()
     add_library(${module_libname} INTERFACE)
   endif()
-
+  message(${module_libname} ${RTC_SCOPE} rtc_common)
   target_link_libraries(${module_libname} ${RTC_SCOPE} rtc_common)
   if(NOT module_name STREQUAL "core")
     target_link_libraries(${module_libname} ${RTC_SCOPE} rtc)

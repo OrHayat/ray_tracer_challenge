@@ -2,4 +2,4 @@ get_filename_component(PROJECT_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(${PROJECT_NAME})
 
 add_executable(${PROJECT_NAME} Chapter5_main.cpp)
-target_link_libraries(${PROJECT_NAME} rtc::common rtc_stb tutorials)
+target_link_libraries(${PROJECT_NAME} rtc::core rtc_stb tutorials)

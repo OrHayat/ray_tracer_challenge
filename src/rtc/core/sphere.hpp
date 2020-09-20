@@ -29,6 +29,7 @@ struct sphere:shape{
         disc=std::sqrt(disc);
         res.t.push_back((-b-disc));
         res.t.push_back((-b+disc));
+//        std::cout<<"found collision t="<<res.t[0]<<","<<res.t[1]<<std::endl;
         return res;
     }
 };

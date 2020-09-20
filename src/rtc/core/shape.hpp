@@ -9,6 +9,11 @@
 #include <glm/glm.hpp>
 struct shape{
     glm::mat4 model;
+    glm::vec4 ka=glm::vec4(0);
+    glm::vec4 ks=glm::vec4(0);;
+    glm::vec4 kd=glm::vec4(0);;
+    glm::vec4 kr=glm::vec4(0);;
+    glm::vec4 kt=glm::vec4(0);;
     virtual collision_data collide(ray r)=0;
 };
 #endif //RAY_TRACER_SHAPE_HPP

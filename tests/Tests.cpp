@@ -6,6 +6,7 @@
 #include <rtc/core/ray.hpp>
 #include <rtc/core/collision_data.hpp>
 #include <rtc/core/sphere.hpp>
+#include <rtc/Camera.hpp>
 #include <doctest/doctest.h>
 
 #define  GLM_ENABLE_EXPERIMENTAL
@@ -146,4 +147,33 @@ TEST_SUITE("ray")
             }
         }
     }
+}
+
+TEST_SUITE("camera")
+{
+    SCENARIO("The pixel size for horrizontal canvas")
+    {
+        GIVEN("c= camera(200,125,math.pi/2)")
+        {
+            Camera c(200,125,glm::pi<float>()*0.5f);
+            THEN("c.pixel_size is 0.001")
+            {
+                REQUIRE_EQ(doctest::Approx(0.01),c.pixel_size);
+            }
+        }
+    }
+
+
+    SCENARIO("The pixel size for vertical canvas")
+    {
+                GIVEN("c= camera(125,200,math.pi/2)")
+        {
+            Camera c(125,200,glm::pi<float>()*0.5f);
+                    THEN("c.pixel_size is 0.001")
+            {
+                        REQUIRE_EQ(doctest::Approx(0.01),c.pixel_size);
+            }
+        }
+    }
+
 }

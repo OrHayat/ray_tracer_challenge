@@ -26,7 +26,7 @@ int main(int argc, char** argv)
     Canvas<glm::u8vec3>canvas(900,550);
     std::cout<<"canvas width="<<canvas.width<<",canvas.height="<<canvas.height<<std::endl;
     do{
-        glm::vec3 col=glm::vec3(1.0f,0.0f,0.25f)*255.0f;
+        glm::vec4 col=glm::vec4(1.0f,0.0f,0.25f,1.0f)*255.0f;
         glm::vec2 canvas_pos=projectile.position.xy;
         canvas_pos.y=glm::clamp(canvas_pos.y,0.0f,(float_t )(canvas.height-1));
         canvas_pos.x=glm::clamp(canvas_pos.x,0.0f,(float_t)(canvas.width-1));
@@ -42,6 +42,7 @@ int main(int argc, char** argv)
         projectile.tick_(env);
     }while (projectile.position.y>0);
 
+//    int x=stbi_write_png()
     int x=stbi_write_bmp("./output123.bmp",canvas.width,canvas.height,3,canvas.data);
 //    int x=stbi_write_jpg("./outputtest111.jpg:",canvas.width,canvas.height,3,canvas.data,900);
     std::cout<<"foo";

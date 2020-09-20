@@ -22,15 +22,43 @@ struct  Canvas
         stride[0]=width;
         stride[1]=1;
     }
+    ~Canvas()
+    {
+        if(this->data!= nullptr)
+        delete [] this->data;
+        this->data= nullptr;
+    }
+    Canvas(const Canvas& other):height(other.height),width(other.width),data(new T[other.width*other.height]){
+        std::cout<<"called copy constrctur"<<std::endl;
+        std::memcpy(this->data,other.data,sizeof(other.data));
+        stride[0]=other.stride[0];
+        stride[1]=other.stride[1];
+    }
+    Canvas & operator=(const Canvas & other)
+    {
+        std::cout<<"called operator= on canvas"<<std::endl;
+        if(this!=&other)
+        {
+            if(this->data!= nullptr)
+                delete [] this->data;
+            this->data= nullptr;
+        }
+        this->height=other.height;
+        this->width=other.width;
+        this->stride[0]=other.stride[0];
+        this->stride[1]=other.stride[1];
+        this->data=new T[width*height];
+        std::memcpy(this->data,other.data,sizeof(other.data));
+    }
     void set_pixel(int x,int y,T item)
     {
-        y=height-y;
+        y=height-1-y;
 //        printf("setting x=%d,y=%d\n",x,y);
         data[y*stride[0]+x*stride[1]]=item;
     }
     T get_pixel(int x,int y)
     {
-        return data[i*stride[0]+j*stride[1]];//=item;
+        return data[y*stride[0]+x*stride[1]];
     }
     //todo linees on x axis only ,lines on y axis only m
     void drawline(glm::ivec2 p0,glm::ivec2 p1,glm::vec3 col)//TODO remove the branching  in the loop by implmenting better version of the algortihem
@@ -64,7 +92,7 @@ struct  Canvas
             }
         }
     }
-    void draw_pixel(glm::ivec2 point,glm::vec3 col)
+    void draw_pixel(glm::ivec2 point,T col)
     {
         if(point.x<0||point.x>this->width||point.y<0||point.y>this->height)
         {
@@ -73,7 +101,7 @@ struct  Canvas
         this->set_pixel(point.x,point.y,col);
     }
 
-    void draw_pixel(int x,int y,glm::vec3 col)
+    void draw_pixel(int x,int y,T col)
     {
         if((x<0)||(x>this->width)||(y<0)||(y>this->height))
         {
@@ -81,7 +109,7 @@ struct  Canvas
         }
         this->set_pixel(x,y,col);
     }
-    void draw_circle(glm::ivec2 center,int r,glm::vec3 col,int tickness=3) {
+    void draw_circle(glm::ivec2 center,int r,T col,int tickness=3) {
         //radius is 4 tickness is 2 so equal so balance it draw radius 3 tickness 2
         r-=tickness/2;
         int xo = r+tickness;
@@ -121,7 +149,7 @@ struct  Canvas
         }
         }
 
-    void xLine(int x1, int x2, int y, glm::vec3 col)
+    void xLine(int x1, int x2, int y, T col)
     {
         if(x1<x2) {
             while (x1 <= x2) draw_pixel(x1++, y, col);
@@ -130,7 +158,7 @@ struct  Canvas
             while (x2 <= x1) draw_pixel(x1--, y, col);
         }
     }
-    void yLine(int x, int y1, int y2, glm::vec3 col) {
+    void yLine(int x, int y1, int y2,T col) {
         if (y1 < y2) {
             while (y1 <= y2) draw_pixel(x, y1++, col);
         }

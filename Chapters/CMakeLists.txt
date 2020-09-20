@@ -28,7 +28,7 @@ endif()
 option(TUTORIALS_CHAPTER1 "Compile chapter 1" ON)
 option(TUTORIALS_CHAPTER2 "Compile chapter 2" ON)
 option(TUTORIALS_CHAPTER4 "Compile chapter 4" ON)
-
+option(TUTORIALS_CHAPTER5 "Compile chapter 4" ON)
 
 
 
@@ -47,4 +47,8 @@ if(TUTORIALS_CHAPTER2)
 endif()
 if(TUTORIALS_CHAPTER4)
     add_subdirectory(Chapter4)
+endif()
+
+if(TUTORIALS_CHAPTER5)
+    add_subdirectory(Chapter5)
 endif()
