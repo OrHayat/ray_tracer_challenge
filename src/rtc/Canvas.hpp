@@ -16,7 +16,10 @@ struct  Canvas
         int shape[2];
     };
     int stride[2];
-    T* data;
+    union {
+        T *data;
+        void* _void_data_ptr_;
+    };
     Canvas(int width,int height):height(height),width(width),data(new T[width*height]){
 //        std::cout<<"width="<<width<<"height="<<height<<std::endl;
         stride[0]=width;
