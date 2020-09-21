@@ -20,7 +20,7 @@ int main(int argc, char** argv)
 {
     Scene s;
     Camera cam(650,400,glm::pi<float>()/2);
-    cam.camera_to_world_view=glm::translate(glm::mat4(),glm::vec3(0,0,4));
+    cam.camera_to_world_view=glm::scale(glm::translate(glm::mat4(),glm::vec3(0,0,4)),glm::vec3(-1,-1,1));
     s.I_ambient=glm::vec4(1.0f,1.0f,1.0f,1.0f);
     s.selected_camera=0;
     s.cameras.push_back(cam);
@@ -32,7 +32,7 @@ int main(int argc, char** argv)
     s.objects.push_back(sphere_);
     point_light* point_light1=new point_light();
     point_light1->kl=0.4f;
-    point_light1->pos=glm::vec3(2.0f,0.0f,2.0f);
+    point_light1->pos=glm::vec3(0.0f,5.0f,3.0f);
     point_light1->intensity=glm::vec3(1.0f,1.0f,1.0f);
     s.lights.push_back(point_light1);
     Canvas<glm::vec3> can= s.render();
@@ -41,6 +41,7 @@ int main(int argc, char** argv)
     {
         res.data[i]=can.data[i];
     }
+//    res.draw_circle(glm::ivec2(450,350),30,glm::u8vec3(0,255,0),6);
     int x=stbi_write_bmp("./output1234.bmp",res.width,res.height,3,res.data);
     printf("x=%d\n",x);
 
