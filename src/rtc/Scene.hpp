@@ -10,11 +10,13 @@
 #include <rtc/core/shape.hpp>
 #include <vector>
 #include <iostream>
+#include <rtc/core/lighting/light.hpp>
 #include <rtc/Camera.hpp>
 #include <rtc/Canvas.hpp>
 struct Scene {
     std::vector<shape*> objects;
     std::vector<Camera>cameras;
+    std::vector<light*>lights;
     glm::vec4 I_ambient=glm::vec4(0);
     int max_depth=50;
     int selected_camera;
@@ -41,7 +43,18 @@ struct Scene {
         if(collided.has_value())
         {
             glm::vec4 ka=collided.value().colided_shape.ka;
-            return glm::vec3(ka.x*I_ambient.x,ka.y*I_ambient.y,ka.z*I_ambient.z);
+            glm::vec3 intersection_point=r(min_t);
+            glm::vec3 normal=glm::normalize(collided.value().colided_shape.get_normal_at_point(intersection_point));
+            glm::vec3 resulting_color=glm::vec3(0);
+            for(unsigned int i=0;i<lights.size();i++)
+            {
+                glm::vec3 dir_to_lightsource=glm::normalize(lights.at(i)->pos-intersection_point);
+                glm::vec3 intensity=lights.at(i)->get_lighting_Intensity_from(intersection_point);
+                resulting_color+=intensity*glm::dot(normal,dir_to_lightsource);
+//                glm::vec3 I lights.at(i)->get_lighting_from(intersection_point);
+            }
+            resulting_color+=glm::vec3(ka.x*I_ambient.x,ka.y*I_ambient.y,ka.z*I_ambient.z);
+            return resulting_color;
         }
         return  glm::vec3(0,0,0);
     }
@@ -56,11 +69,11 @@ struct Scene {
             {
 //                std::cout<<"x="<<x<<" ,y= "<<y<<std::endl;
                 glm::vec3 tmp=render_block(x,y,1,1,0);
-                if(tmp.x!=0||tmp.y!=0||tmp.z!=0) {
-                    nonzeros_pixels++;
+//                if(tmp.x!=0||tmp.y!=0||tmp.z!=0) {
+//                    nonzeros_pixels++;
 //                    tmp=glm::clamp(tmp*255.0f,glm::vec3(0.0f),glm::vec3(255.0f));
 //                    std::cout << "vec3(" << tmp.x << "," << tmp.y << "," << tmp.z << ")" << std::endl;
-                }
+//                }
                 res.set_pixel(x,y,glm::clamp(tmp*255.0f,glm::vec3(0.0f),glm::vec3(255.0f)));
             }
         }
