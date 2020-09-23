@@ -21,9 +21,9 @@ struct Scene {
     int max_depth=50;
     int selected_camera;
 
-    glm::vec3 render_block(int x,int y,int block_size_x,int block_size_y,int depth)
+    glm::vec3 render_block(float x,float y,int block_size_x,int block_size_y,int depth)
     {
-        ray r = cameras[selected_camera].RayForPixel(x+0.5f,y+0.5f);
+        ray r = cameras[selected_camera].RayForPixel(x,y);
         float min_t=-1;
         std::optional<collision_data> collided;
         for(unsigned int i=0;i<objects.size();i++)
@@ -43,19 +43,21 @@ struct Scene {
         if(collided.has_value())
         {
             glm::vec4 ka=collided.value().colided_shape.ka;
+            glm::vec4 kd=collided.value().colided_shape.kd;
+            glm::vec4 ks=collided.value().colided_shape.ks;
             glm::vec3 intersection_point=r(min_t);
             glm::vec3 normal=glm::normalize(collided.value().colided_shape.get_normal_at_point(intersection_point));
             glm::vec3 resulting_color=glm::vec3(0);
             for(unsigned int i=0;i<lights.size();i++)
             {
                 glm::vec3 dir_to_lightsource=(lights.at(i)->pos-intersection_point);
-                ray shadow_ray(intersection_point,dir_to_lightsource);
+                ray shadow_ray(intersection_point+dir_to_lightsource*0.0005f,dir_to_lightsource);
                 bool shadow=false;
                 for(unsigned obj_id=0;obj_id<objects.size();++obj_id)
                 {
                    collision_data shadow_ray_collision=objects.at(obj_id)->collide(shadow_ray);
                    std::optional<float>col_val= shadow_ray_collision.find_collision_value();
-                   if(col_val.has_value()&&col_val.value()<0.9999&&col_val.value()>0.00001)
+                   if(col_val.has_value()&&col_val.value()<0.9999&&col_val.value()>0)
                    {
                        shadow=true;
                        break;
@@ -64,6 +66,9 @@ struct Scene {
                 if(!shadow) {
                     dir_to_lightsource=glm::normalize(dir_to_lightsource);
                     glm::vec3 intensity = lights.at(i)->get_lighting_Intensity_from(intersection_point);
+                    intensity.x*=kd.x;
+                    intensity.y*=kd.y;
+                    intensity.z*=kd.z;
                     resulting_color += intensity * glm::dot(normal, dir_to_lightsource);
 //                glm::vec3 I lights.at(i)->get_lighting_from(intersection_point);
                 }
@@ -83,7 +88,12 @@ struct Scene {
             for(uint32_t y=0;y<cameras[selected_camera].image_height;y++)
             {
 //                std::cout<<"x="<<x<<" ,y= "<<y<<std::endl;
-                glm::vec3 tmp=render_block(x,y,1,1,0);
+                glm::vec3 tmp=glm::vec3(0);
+                for (unsigned int s = 0; s <4 ; ++s)
+                {
+                   tmp+=render_block(x+(float)s/2.0f,y+((float)(s%2)/2.0f),1,1,0);
+                }
+                tmp/=4;
 //                if(tmp.x!=0||tmp.y!=0||tmp.z!=0) {
 //                    nonzeros_pixels++;
 //                    tmp=glm::clamp(tmp*255.0f,glm::vec3(0.0f),glm::vec3(255.0f));
