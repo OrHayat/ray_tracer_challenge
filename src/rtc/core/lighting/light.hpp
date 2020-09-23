@@ -6,6 +6,13 @@
 #define RAY_TRACER_LIGHT_HPP
 
 #include <glm/glm.hpp>
+
+enum light_type
+{
+    point_light,
+    directed_light,
+    sportlight
+};
 struct light{
     glm::vec4 intensity=glm::vec4(0);
     glm::vec3 pos=glm::vec3(0);
