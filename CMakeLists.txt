@@ -23,6 +23,7 @@ set(RTC_BUILD_CHAPTERS ON)
 set(RTC_USE_STATIC_LIBRARY ON)
 message(RTC_EXPORT_TARGETS=${RTC_EXPORT_TARGETS})
 # (by default, static build is off since libigl is a header-only library)
+
 option(RTC_USE_STATIC_LIBRARY "Use  as static library" OFF)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})

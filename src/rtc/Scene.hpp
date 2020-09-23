@@ -48,10 +48,25 @@ struct Scene {
             glm::vec3 resulting_color=glm::vec3(0);
             for(unsigned int i=0;i<lights.size();i++)
             {
-                glm::vec3 dir_to_lightsource=glm::normalize(lights.at(i)->pos-intersection_point);
-                glm::vec3 intensity=lights.at(i)->get_lighting_Intensity_from(intersection_point);
-                resulting_color+=intensity*glm::dot(normal,dir_to_lightsource);
+                glm::vec3 dir_to_lightsource=(lights.at(i)->pos-intersection_point);
+                ray shadow_ray(intersection_point,dir_to_lightsource);
+                bool shadow=false;
+                for(unsigned obj_id=0;obj_id<objects.size();++obj_id)
+                {
+                   collision_data shadow_ray_collision=objects.at(obj_id)->collide(shadow_ray);
+                   std::optional<float>col_val= shadow_ray_collision.find_collision_value();
+                   if(col_val.has_value()&&col_val.value()<0.9999&&col_val.value()>0.00001)
+                   {
+                       shadow=true;
+                       break;
+                   }
+                }
+                if(!shadow) {
+                    dir_to_lightsource=glm::normalize(dir_to_lightsource);
+                    glm::vec3 intensity = lights.at(i)->get_lighting_Intensity_from(intersection_point);
+                    resulting_color += intensity * glm::dot(normal, dir_to_lightsource);
 //                glm::vec3 I lights.at(i)->get_lighting_from(intersection_point);
+                }
             }
             resulting_color+=glm::vec3(ka.x*I_ambient.x,ka.y*I_ambient.y,ka.z*I_ambient.z);
             return resulting_color;
