@@ -50,8 +50,19 @@ struct Scene {
             glm::vec3 resulting_color=glm::vec3(0);
             for(unsigned int i=0;i<lights.size();i++)
             {
-                glm::vec3 dir_to_lightsource=(lights.at(i)->pos-intersection_point);
+                light* cur_light= this->lights.at(i);
+                glm::vec3 dir_to_lightsource=(cur_light->pos-intersection_point);
                 ray shadow_ray(intersection_point+dir_to_lightsource*0.0005f,dir_to_lightsource);
+
+                if(cur_light->type==light_type::spot_light)
+                {
+
+                    float cos_theta=glm::dot(glm::normalize(dir_to_lightsource),normal);
+                    if(cos_theta>cur_light->cutoff_angel)//the angle is between 0 and 180 degress so for x1,x2 if x2>x1 cos(x1)>cos(x2)
+                    {
+                        continue;
+                    }
+                }
                 bool shadow=false;
                 for(unsigned obj_id=0;obj_id<objects.size();++obj_id)
                 {
@@ -65,7 +76,34 @@ struct Scene {
                 }
                 if(!shadow) {
                     dir_to_lightsource=glm::normalize(dir_to_lightsource);
-                    glm::vec3 intensity = lights.at(i)->get_lighting_Intensity_from(intersection_point);
+
+                    glm::vec3 intensity;
+/*
+ *     virtual glm::vec3 get_lighting_Intensity_from(glm::vec3 object_pos)
+    {
+        float dist=glm::distance(pos,object_pos);
+        return this->intensity/(((kq*dist)+kl)*dist+kc);
+    };
+*/
+                    switch (cur_light->type) {
+                        case light_type::point_light:
+                        {
+                            float dist=glm::distance(cur_light->pos,intersection_point);
+                            intensity=cur_light->intensity/(((cur_light->kq*dist)+cur_light->kl)*dist+cur_light->kc);
+                            break;
+                        }
+                        case light_type::directed_light:
+                        {
+                            intensity=cur_light->intensity*glm::dot(normal,cur_light->dir);
+                            break;
+                        }
+                        case light_type::spot_light:
+                        {
+                            float dist=glm::distance(cur_light->pos,intersection_point);
+                            intensity=cur_light->intensity*glm::dot(normal,cur_light->dir)/(((cur_light->kq*dist)+cur_light->kl)*dist+cur_light->kc);
+                            break;
+                        }
+                    }
                     intensity.x*=kd.x;
                     intensity.y*=kd.y;
                     intensity.z*=kd.z;

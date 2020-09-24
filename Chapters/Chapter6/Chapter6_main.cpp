@@ -15,7 +15,6 @@
 #include <stb_image_write.h>
 #include <glm/gtc/matrix_transform.hpp>
 #include <rtc/core/sphere.hpp>
-#include <rtc/core/lighting/point_light.hpp>
 int main(int argc, char** argv)
 {
     Scene s;
@@ -32,13 +31,13 @@ int main(int argc, char** argv)
 //    sphere_->model=(glm::translate(glm::mat4(),glm::vec3(2,0,0))*glm::scale(glm::mat4(),glm::vec3(3,3,3)));
 //    sphere_->model_inv=glm::inverse(sphere_->model);
     s.objects.push_back(sphere_);
-    point_light* point_light1=new point_light();
+    glm::vec3 light1_pos=glm::vec3(0.0f,2.0f,4.0f);;
+    light* point_light1=light::make_point_light_ptr(light1_pos);
     point_light1->kc=1.2f;
-    point_light1->pos=glm::vec3(0.0f,2.0f,4.0f);
-    point_light1->intensity=glm::vec3(1.0f,1.0f,1.0f);
-    point_light* point_light2=new point_light();
-    point_light2->pos=glm::vec3(5.0f,-6.0f,-5.0f);
-    point_light2->intensity=glm::vec3(1.0f,1.0f,1.0f);
+    point_light1->intensity=glm::vec4(1.0f,1.0f,1.0f,1.0f);
+    glm::vec3 light2_pos=glm::vec3(5.0f,-6.0f,-5.0f);
+    light* point_light2=light::make_point_light_ptr(light2_pos);
+    point_light2->intensity=glm::vec4(1.0f,1.0f,1.0f,1.0f);
     point_light2->kc=1.0f;
 
     s.lights.push_back(point_light1);
