@@ -17,7 +17,8 @@ struct sphere:shape{
     glm::vec3 get_normal_at_point(glm::vec3 point)
     {
         glm::vec4 tmp=glm::transpose(this->model_inv)*glm::vec4(point-center,0.0f);
-        return tmp.xyz;
+
+        return glm::normalize(tmp.xyz());//tmp.xyz;
 //        return glm::normalize(point-center);
     }
     virtual collision_data collide(ray r)

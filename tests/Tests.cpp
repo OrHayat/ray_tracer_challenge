@@ -2,6 +2,8 @@
 
 
 #define DOCTEST_CONFIG_IMPLEMENT
+#define GLM_FORCE_SWIZZLE
+#define GLM_FORCE_CTOR_INIT
 
 #include <rtc/core/ray.hpp>
 #include <rtc/core/collision_data.hpp>
@@ -45,6 +47,150 @@ int main(int argc, char** argv) {
 
     return res + client_stuff_return_code; // the result from doctest is propagated here as well
 }
+
+
+
+TEST_SUITE("sphere") {
+    SCENARIO ("A default sphere") {
+                GIVEN("s<- sphere()") {
+            sphere s = sphere();
+                    THEN("s.radius=1") {
+                        REQUIRE_EQ(s.radius, doctest::Approx(1.0f));
+            }
+                    THEN("S.model is identity") {
+                        REQUIRE_EQ(s.model, glm::mat4());
+            }
+        }
+    }
+
+    SCENARIO ("Intersecting scaled sphere with a ray") {
+                GIVEN("r=ray(point(0,0,-5),vector(0,0,1))") {
+            ray r = ray(glm::vec3(0, 0, -5), glm::vec3(0, 0, 1));
+                    AND_WHEN("s=sphere") {
+                sphere s = sphere();
+                        WHEN("set transform s scale(2,2,2)") {
+                    s.set_model(glm::scale(s.model, glm::vec3(2, 2, 2)));
+                            AND_WHEN("xs=intersect(r,s)") {
+                        collision_data xs = s.collide(r);
+                                THEN("xs.t.size()==2") {
+                                    REQUIRE_EQ(2, xs.t.size());
+                                    AND_THEN("xs.t[0]==3") {
+                                        REQUIRE_EQ(3, xs.t.at(0));
+                            }
+                                    AND_THEN("xs.t[1]==7") {
+                                        REQUIRE_EQ(7, xs.t.at(1));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+    SCENARIO ("Intersecting translated sphere with a ray") {
+                GIVEN("r=ray(point(0,0,-5),vector(0,0,1))") {
+            ray r = ray(glm::vec3(0, 0, -5), glm::vec3(0, 0, 1));
+                    AND_WHEN("s=sphere") {
+                sphere s = sphere();
+                        WHEN("set transform s translate(5,0,0)") {
+                    s.set_model(glm::translate(s.model, glm::vec3(5, 0, 0)));
+                            AND_WHEN("xs=intersect(r,s)") {
+                        collision_data xs = s.collide(r);
+                                THEN("xs.t.size()==0") {
+                                    REQUIRE_EQ(0, xs.t.size());
+                        }
+                    }
+                }
+            }
+        }
+    }
+    SCENARIO ("normal on a sphere at a point on x axis") {
+        GIVEN("s=sphere()")
+        {
+            sphere s;
+            WHEN("n=normal at(s,point(1,0,0))")
+            {
+                glm::vec3 n=s.get_normal_at_point(glm::vec3(1,0,0));
+                THEN("n=vector(1,0,0)")
+                {
+                    REQUIRE_EQ(n,glm::vec3(1,0,0));
+                }
+            }
+        }
+    }
+
+
+    SCENARIO ("normal on a sphere at a point on y axis") {
+                GIVEN("s=sphere()")
+        {
+            sphere s;
+                    WHEN("n=normal at(s,point(0,1,0))")
+            {
+                glm::vec3 n=s.get_normal_at_point(glm::vec3(0,1,0));
+                        THEN("n=vector(0,1,0)")
+                {
+                            REQUIRE_EQ(n,glm::vec3(0,1,0));
+                }
+            }
+        }
+    }
+
+
+    SCENARIO ("normal on a sphere at a point on z axis") {
+                GIVEN("s=sphere()")
+        {
+            sphere s;
+                    WHEN("n=normal at(s,point(0,0,1))")
+            {
+                glm::vec3 n=s.get_normal_at_point(glm::vec3(0,0,1));
+                        THEN("n=vector(0,0,1)")
+                {
+                            REQUIRE_EQ(n,glm::vec3(0,0,1));
+                }
+            }
+        }
+    }
+
+    SCENARIO ("normal on a sphere at a nonaxial point") {
+        GIVEN("s=sphere()")
+        {
+            sphere s;
+            WHEN("n=normal at(s,point(sqrt(3)/3,sqrt(3)/3,sqrt(3)/3)")
+            {
+                glm::vec3 n=s.get_normal_at_point(glm::vec3(glm::sqrt(3)/3.0f));
+                THEN("n=vector(sqrt(3)/3,sqrt(3)/3,sqrt(3)/3)")
+                {
+                    REQUIRE_EQ(n.x,doctest::Approx(0.577350f));
+                    REQUIRE_EQ(n.y,doctest::Approx(0.577350f));
+                    REQUIRE_EQ(n.z,doctest::Approx(0.577350f));
+                }
+            }
+        }
+    }
+
+    SCENARIO ("sphere normal is normalized vector")
+    {
+        GIVEN("s=sphere()")
+        {
+            sphere s;
+            WHEN("n=normal at(s,point(sqrt(3)/3,sqrt(3)/3,sqrt(3)/3)")
+            {
+                glm::vec3 n=s.get_normal_at_point(glm::vec3(glm::sqrt(3)/3.0f));
+                        THEN("n=normalized(n)")
+                {
+                            glm::vec3 norm_n=glm::normalize(n);
+                            REQUIRE(n.x==doctest::Approx(norm_n.x));
+                            REQUIRE(n.y==doctest::Approx(norm_n.y));
+                            REQUIRE(n.z==doctest::Approx(norm_n.z));
+                }
+            }
+        }
+    }
+}
+
+
+
 
 TEST_SUITE("ray")
 {
