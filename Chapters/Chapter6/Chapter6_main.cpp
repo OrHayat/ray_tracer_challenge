@@ -25,7 +25,7 @@ int main(int argc, char** argv)
     s.cameras.push_back(cam);
     sphere* sphere_= new sphere();
     sphere_->ka=glm::vec4(0.85f,0.35f,0.2f,1.0f);
-    sphere_->kd=glm::vec4(1.0f,0.35f,0.5f,1.0f);
+    sphere_->kd=glm::vec4(0.65f,0.85f,0.5f,1.0f);
     sphere_->set_model(glm::mat4());
 //    sphere_->set_model((glm::translate(glm::mat4(),glm::vec3(0,0,0))*glm::scale(glm::mat4(),glm::vec3(1,1,1))));
 //    sphere_->model=(glm::translate(glm::mat4(),glm::vec3(2,0,0))*glm::scale(glm::mat4(),glm::vec3(3,3,3)));
@@ -36,12 +36,12 @@ int main(int argc, char** argv)
     point_light1->kc=1.2f;
     point_light1->intensity=glm::vec4(1.0f,1.0f,1.0f,1.0f);
     glm::vec3 light2_pos=glm::vec3(5.0f,-6.0f,-5.0f);
-    light* point_light2=light::make_point_light_ptr(light2_pos);
-    point_light2->intensity=glm::vec4(1.0f,1.0f,1.0f,1.0f);
-    point_light2->kc=1.0f;
-
+//    light* point_light2=light::make_point_light_ptr(light2_pos);
+//    point_light2->intensity=glm::vec4(1.0f,1.0f,1.0f,1.0f);
+//    point_light2->kc=1.0f;
+    light* directional_light=light::make_directed_light_ptr(glm::vec3(1,0,0),glm::vec4(0,1,1,1));
     s.lights.push_back(point_light1);
-    s.lights.push_back(point_light2);
+    s.lights.push_back(directional_light);
     Canvas<glm::vec3> can= s.render();
     Canvas<glm::u8vec3> res(can.width,can.height);
     for (int i = 0; i <res.width*res.height ; ++i)
