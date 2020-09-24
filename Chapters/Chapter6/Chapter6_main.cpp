@@ -26,6 +26,8 @@ int main(int argc, char** argv)
     sphere* sphere_= new sphere();
     sphere_->ka=glm::vec4(0.85f,0.35f,0.2f,1.0f);
     sphere_->kd=glm::vec4(0.65f,0.85f,0.5f,1.0f);
+    sphere_->ks=glm::vec4(0,0.5,1,1);
+    sphere_->shininess=250.0f;
     sphere_->set_model(glm::mat4());
 //    sphere_->set_model((glm::translate(glm::mat4(),glm::vec3(0,0,0))*glm::scale(glm::mat4(),glm::vec3(1,1,1))));
 //    sphere_->model=(glm::translate(glm::mat4(),glm::vec3(2,0,0))*glm::scale(glm::mat4(),glm::vec3(3,3,3)));

@@ -15,6 +15,7 @@ struct shape{
     glm::vec4 kd=glm::vec4(0);;
     glm::vec4 kr=glm::vec4(0);;
     glm::vec4 kt=glm::vec4(0);;
+    float shininess=0.0f;
     virtual collision_data collide(ray r)=0;
     virtual glm::vec3 get_normal_at_point(glm::vec3 point)=0;
     void set_model(const glm::mat4& model)

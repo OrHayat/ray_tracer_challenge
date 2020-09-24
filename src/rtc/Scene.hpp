@@ -23,12 +23,12 @@ struct Scene {
 
     glm::vec3 render_block(float x,float y,int block_size_x,int block_size_y,int depth)
     {
-        ray r = cameras[selected_camera].RayForPixel(x,y);
+        ray ray_from_eye = cameras[selected_camera].RayForPixel(x,y);
         float min_t=-1;
         std::optional<collision_data> collided;
         for(unsigned int i=0;i<objects.size();i++)
         {
-            collision_data res=objects.at(i)->collide(r);
+            collision_data res=objects.at(i)->collide(ray_from_eye);
             std::optional<float> colision_time=res.find_collision_value();
             float cur_collision_time=colision_time.value_or(-1.0f);
             if(cur_collision_time>=0)
@@ -45,7 +45,7 @@ struct Scene {
             glm::vec4 ka=collided.value().colided_shape.ka;
             glm::vec4 kd=collided.value().colided_shape.kd;
             glm::vec4 ks=collided.value().colided_shape.ks;
-            glm::vec3 intersection_point=r(min_t);
+            glm::vec3 intersection_point=ray_from_eye(min_t);
             glm::vec3 normal=glm::normalize(collided.value().colided_shape.get_normal_at_point(intersection_point));
             glm::vec3 resulting_color=glm::vec3(0);
             for(unsigned int i=0;i<lights.size();i++)
@@ -53,7 +53,6 @@ struct Scene {
                 light* cur_light= this->lights.at(i);
                 glm::vec3 dir_to_lightsource=(cur_light->pos-intersection_point);
                 ray shadow_ray(intersection_point+dir_to_lightsource*0.0005f,dir_to_lightsource);
-
                 if(cur_light->type==light_type::spot_light)
                 {
 
@@ -78,11 +77,13 @@ struct Scene {
                     dir_to_lightsource=glm::normalize(dir_to_lightsource);
 
                     glm::vec3 intensity;
+                    float attenuation=1.0f;
                     switch (cur_light->type) {
                         case light_type::point_light:
                         {
                             float dist=glm::distance(cur_light->pos,intersection_point);
-                            intensity=cur_light->intensity/(((cur_light->kq*dist)+cur_light->kl)*dist+cur_light->kc);
+                            attenuation=1/(((cur_light->kq*dist)+cur_light->kl)*dist+cur_light->kc);
+                            intensity=cur_light->intensity*attenuation;
                             break;
                         }
                         case light_type::directed_light:
@@ -93,14 +94,16 @@ struct Scene {
                         case light_type::spot_light:
                         {
                             float dist=glm::distance(cur_light->pos,intersection_point);
-                            intensity=cur_light->intensity*glm::dot(normal,cur_light->dir)/(((cur_light->kq*dist)+cur_light->kl)*dist+cur_light->kc);
+                            attenuation=1/(((cur_light->kq*dist)+cur_light->kl)*dist+cur_light->kc);
+                            intensity=cur_light->intensity*glm::dot(normal,cur_light->dir)*attenuation;
                             break;
                         }
                     }
-                    intensity.x*=kd.x;
-                    intensity.y*=kd.y;
-                    intensity.z*=kd.z;
-                    resulting_color += intensity * glm::dot(normal, dir_to_lightsource);
+                    resulting_color += glm::vec3(intensity.x*kd.x,intensity.y*kd.y,intensity.z*kd.z) * glm::dot(normal, dir_to_lightsource);//diffuse
+
+                    glm::vec3 reflected_light_dir= glm::normalize(glm::reflect(-dir_to_lightsource,normal));
+                    float specular_cos_theta=glm::dot(-ray_from_eye.dir,reflected_light_dir);
+                    resulting_color+=glm::vec3(intensity.x*ks.x,intensity.y*ks.y,intensity.z*ks.z)*glm::pow(specular_cos_theta,collided.value().colided_shape.shininess);
 //                glm::vec3 I lights.at(i)->get_lighting_from(intersection_point);
                 }
             }
