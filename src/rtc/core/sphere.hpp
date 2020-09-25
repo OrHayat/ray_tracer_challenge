@@ -20,7 +20,6 @@ struct sphere:shape{
         glm::vec4 objectPoint = this->model_inv*glm::vec4(point,1);
         glm::vec4 object_normal=glm::vec4(objectPoint.xyz()-center,0);
         glm::vec3 worldnormal=(glm::transpose(this->model_inv)*object_normal).xyz;
-
         return glm::normalize(worldnormal);
     }
     collision_data collide(ray r) override// collision_data collide(ray r)

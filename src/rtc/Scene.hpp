@@ -13,6 +13,8 @@
 #include <rtc/core/lighting/light.hpp>
 #include <rtc/Camera.hpp>
 #include <rtc/Canvas.hpp>
+#include <glm/gtx/string_cast.hpp>
+
 struct Scene {
     std::vector<shape*> objects;
     std::vector<Camera>cameras;
@@ -47,12 +49,24 @@ struct Scene {
             glm::vec4 ks=collided.value().colided_shape.ks;
             glm::vec3 intersection_point=ray_from_eye(min_t);
             glm::vec3 normal=glm::normalize(collided.value().colided_shape.get_normal_at_point(intersection_point));
+            if(glm::dot(normal,-ray_from_eye.dir)<0)
+            {
+                normal=-normal;
+            }
             glm::vec3 resulting_color=glm::vec3(0);
             for(unsigned int i=0;i<lights.size();i++)
             {
                 light* cur_light= this->lights.at(i);
-                glm::vec3 dir_to_lightsource=(cur_light->pos-intersection_point);
-                ray shadow_ray(intersection_point+dir_to_lightsource*0.0005f,dir_to_lightsource);
+                glm::vec3 dir_to_lightsource;
+                if(cur_light->type==light_type::directed_light)
+                {
+                    dir_to_lightsource=-cur_light->dir;
+                }
+                else {//point light or spotlight
+                    dir_to_lightsource=(cur_light->pos - intersection_point);
+//                    std::cout<<"cur lightsource pos is:"<<glm::to_string(cur_light->pos)<<",,,, and intersection point is: "<<glm::to_string(intersection_point)<<std::endl;
+                }
+
                 if(cur_light->type==light_type::spot_light)
                 {
 
@@ -62,18 +76,31 @@ struct Scene {
                         continue;
                     }
                 }
+                ray shadow_ray(intersection_point+normal*0.005f,dir_to_lightsource);
                 bool shadow=false;
                 for(unsigned obj_id=0;obj_id<objects.size();++obj_id)
                 {
                    collision_data shadow_ray_collision=objects.at(obj_id)->collide(shadow_ray);
                    std::optional<float>col_val= shadow_ray_collision.find_collision_value();
-                   if(col_val.has_value()&&col_val.value()<0.9999&&col_val.value()>0)
-                   {
-                       shadow=true;
-                       break;
-                   }
+//                   if(col_val.has_value())
+                    if(col_val.has_value())
+                    {
+                        if(col_val.value()<0.9999&&col_val.value()>0)
+                        {
+                            shadow=true;
+                            break;
+                        }
+                        else {
+//                            std::cout << "colission for light:" << i <<
+//                                      "with object" << obj_id << "is at t="
+//                                      << col_val.value() << "with position:"
+//                                      << glm::to_string(shadow_ray(col_val.value())) //<< std::endl
+//                                      <<"shadow ray dir is"<<glm::to_string(shadow_ray.dir)<<std::endl;
+                        }
+                    }
                 }
                 if(!shadow) {
+//                    std::cout<<"no shadowwwwwwwwwwwwwwwwwwwww light id="<<i<<std::endl;
                     dir_to_lightsource=glm::normalize(dir_to_lightsource);
 
                     glm::vec3 intensity;
@@ -115,7 +142,7 @@ struct Scene {
     Canvas<glm::vec3> render()
     {
         int nonzeros_pixels=0;
-        std::cout<<"selected camera is"<<selected_camera<<"out of"<<cameras.size()<<"cameras"<<std::endl;
+//        std::cout<<"selected camera is"<<selected_camera<<"out of"<<cameras.size()<<"cameras"<<std::endl;
         Canvas<glm::vec3> res(cameras[selected_camera].image_width,cameras[selected_camera].image_height);
         for(uint32_t x=0;x<cameras[selected_camera].image_width;x++)
         {

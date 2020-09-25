@@ -13,7 +13,7 @@ typedef struct ray//:public colider
         glm::vec3 origin;
     };
     glm::vec3 dir;
-    ray(glm::vec3 pos,glm::vec3 dir):pos(pos),dir(glm::normalize(dir)){};
+    ray(glm::vec3 pos,glm::vec3 dir):pos(pos),dir(dir){};
     ray(const ray& other):pos(other.pos),dir(other.dir){};
     ray& operator=(const ray& other)
     {

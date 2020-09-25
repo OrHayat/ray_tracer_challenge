@@ -50,6 +50,29 @@ int main(int argc, char** argv) {
 
 
 
+TEST_SUITE("glm") {
+    SCENARIO ("Reflecting a vector off a slanted surface") {
+        GIVEN("v ← vector(0, -1, 0)")
+        {
+            glm::vec3 v(0,-1,0);
+            AND_THEN("n ← vector(√2/2, √2/2, 0) ")
+            {
+                glm::vec3 n=glm::vec3(glm::sqrt(2.0f)/2.0f,glm::sqrt(2.0f)/2.0f,0.0f);
+                WHEN("r ← reflect(v, n)")
+                {
+                    glm::vec3 r=glm::reflect(v,n);
+                    THEN(" r == vector(1, 0, 0)")
+                    {
+                        REQUIRE_EQ(doctest::Approx(1.0f),r.x);
+                        REQUIRE_EQ(doctest::Approx(0.0f),r.y);
+                        REQUIRE_EQ(doctest::Approx(0.0f),r.z);
+                    }
+                }
+            }
+        }
+    }
+}
+
 TEST_SUITE("sphere") {
     SCENARIO ("A default sphere") {
                 GIVEN("s<- sphere()") {
@@ -184,7 +207,7 @@ TEST_SUITE("sphere") {
                             THEN("n=vector(0,0.70711,-0.70711)") {
                         //glm::vec3 new_n=glm::normalize(glm::vec3(0,0.70711f,-0.70711f));
                                 REQUIRE_EQ(n.x, 0.0f);
-                                CHECK_EQ(n.y, doctest::Approx(0.70711f));
+                                REQUIRE_EQ(n.y, doctest::Approx(0.70711f));
                                 REQUIRE_EQ(n.z, doctest::Approx(-0.70711f));
                     }
                 }
@@ -216,7 +239,6 @@ Scenario: Computing the normal on a transformed sphere
                         {
                             std::cout<<"starting test"<<std::endl;
                             glm::vec3 n=s.get_normal_at_point(glm::vec3(0,glm::sqrt(2.0f)/2.0f,-glm::sqrt(2.0f)/2.0f));
-//                            glm::vec3 n=s.get_normal_at_point(glm::vec3(0,0,1));
 
                             THEN("n = vector(0, 0.97014, -0.24254)")
                             {
