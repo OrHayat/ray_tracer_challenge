@@ -150,9 +150,9 @@ TEST_SUITE("sphere") {
                     WHEN("n=normal at(s,point(sqrt(3)/3,sqrt(3)/3,sqrt(3)/3)") {
                 glm::vec3 n = s.get_normal_at_point(glm::vec3(glm::sqrt(3) / 3.0f));
                         THEN("n=vector(sqrt(3)/3,sqrt(3)/3,sqrt(3)/3)") {
-                            REQUIRE_EQ(n.x, doctest::Approx(glm::sqrt(3.0f)/3.0f));
-                            REQUIRE_EQ(n.y, doctest::Approx(glm::sqrt(3.0f)/3.0f));
-                            REQUIRE_EQ(n.z, doctest::Approx(glm::sqrt(3.0f)/3.0f));
+                            REQUIRE_EQ(n.x, doctest::Approx(glm::sqrt(3.0f) / 3.0f));
+                            REQUIRE_EQ(n.y, doctest::Approx(glm::sqrt(3.0f) / 3.0f));
+                            REQUIRE_EQ(n.z, doctest::Approx(glm::sqrt(3.0f) / 3.0f));
                 }
             }
         }
@@ -174,23 +174,57 @@ TEST_SUITE("sphere") {
     }
 
 
-    SCENARIO ("Computing normal on translated sphere")
+    SCENARIO ("Computing normal on translated sphere") {
+                GIVEN("s=sphere()") {
+            sphere s;
+                    AND_THEN("set transform (s,tranlate(0,1,0))") {
+                s.set_model(glm::translate(s.model, glm::vec3(0, 1, 0)));
+                        WHEN("n=normal_at(s,point(0,1.70711,-0.70711)") {
+                    glm::vec3 n = s.get_normal_at_point(glm::vec3(0, 1.70711f, -0.70711f));
+                            THEN("n=vector(0,0.70711,-0.70711)") {
+                        //glm::vec3 new_n=glm::normalize(glm::vec3(0,0.70711f,-0.70711f));
+                                REQUIRE_EQ(n.x, 0.0f);
+                                CHECK_EQ(n.y, doctest::Approx(0.70711f));
+                                REQUIRE_EQ(n.z, doctest::Approx(-0.70711f));
+                    }
+                }
+            }
+        }
+    }
+
+/*
+ *
+Scenario: Computing the normal on a transformed sphere
+  Given s ← sphere()
+    And m ← scaling(1, 0.5, 1) * rotation_z(π/5)
+    And set_transform(s, m)
+  When n ← normal_at(s, point(0, √2/2, -√2/2))
+  Then n = vector(0, 0.97014, -0.24254)*/
+
+
+    SCENARIO ("Computing normal on transformed sphere")
     {
-    GIVEN("s=sphere()") {
-        sphere s;
-            AND_THEN("set transform (s,tranlate(0,1,0))")
-            {
-            s.set_model(glm::translate(s.model, glm::vec3(0, 1, 0)));
-                    WHEN("n=normal_at(s,point(0,1.70711,-0.70711)")
+            GIVEN("s=sphere()") {
+            sphere s;
+                AND_THEN("m=scale(1,0.5,1)*rotation(π/5,vec(0,0,1))") {
+//                    glm::mat4 m=glm::scale(glm::mat4(),glm::vec3(1,0.5,1));
+                glm::mat4 m =  glm::scale(glm::mat4(),glm::vec3(1.0f,0.5f,1.0f))* glm::rotate(glm::pi<float>() / 5.0f, glm::vec3(0, 0, 1));
+                    AND_THEN("set transform(s,m)")
                     {
-                    glm::vec3 n = s.get_normal_at_point(glm::vec3(0,1.70711f, -0.70711f));
-                   THEN("n=vector(0,0.70711,-0.70711)")
-                   {
-                       //glm::vec3 new_n=glm::normalize(glm::vec3(0,0.70711f,-0.70711f));
-                        REQUIRE_EQ(n.x, 0.0f);
-                       CHECK_EQ(n.y, doctest::Approx(0.70711f));
-                        REQUIRE_EQ(n.z, doctest::Approx(-0.70711f));
-                   }
+                        s.set_model(m);
+                        WHEN("When n ← normal_at(s, point(0, √2/2, -√2/2))")
+                        {
+                            std::cout<<"starting test"<<std::endl;
+                            glm::vec3 n=s.get_normal_at_point(glm::vec3(0,glm::sqrt(2.0f)/2.0f,-glm::sqrt(2.0f)/2.0f));
+//                            glm::vec3 n=s.get_normal_at_point(glm::vec3(0,0,1));
+
+                            THEN("n = vector(0, 0.97014, -0.24254)")
+                            {
+                                CHECK_EQ(doctest::Approx(0.0f),n.x);
+                                CHECK_EQ(doctest::Approx(0.97014f),n.y);
+                                CHECK_EQ(doctest::Approx(-0.24254),n.z);
+                            }
+                    }
                 }
             }
         }
