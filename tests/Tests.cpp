@@ -105,16 +105,14 @@ TEST_SUITE("sphere") {
             }
         }
     }
+
     SCENARIO ("normal on a sphere at a point on x axis") {
-        GIVEN("s=sphere()")
-        {
+                GIVEN("s=sphere()") {
             sphere s;
-            WHEN("n=normal at(s,point(1,0,0))")
-            {
-                glm::vec3 n=s.get_normal_at_point(glm::vec3(1,0,0));
-                THEN("n=vector(1,0,0)")
-                {
-                    REQUIRE_EQ(n,glm::vec3(1,0,0));
+                    WHEN("n=normal at(s,point(1,0,0))") {
+                glm::vec3 n = s.get_normal_at_point(glm::vec3(1, 0, 0));
+                        THEN("n=vector(1,0,0)") {
+                            REQUIRE_EQ(n, glm::vec3(1, 0, 0));
                 }
             }
         }
@@ -122,15 +120,12 @@ TEST_SUITE("sphere") {
 
 
     SCENARIO ("normal on a sphere at a point on y axis") {
-                GIVEN("s=sphere()")
-        {
+                GIVEN("s=sphere()") {
             sphere s;
-                    WHEN("n=normal at(s,point(0,1,0))")
-            {
-                glm::vec3 n=s.get_normal_at_point(glm::vec3(0,1,0));
-                        THEN("n=vector(0,1,0)")
-                {
-                            REQUIRE_EQ(n,glm::vec3(0,1,0));
+                    WHEN("n=normal at(s,point(0,1,0))") {
+                glm::vec3 n = s.get_normal_at_point(glm::vec3(0, 1, 0));
+                        THEN("n=vector(0,1,0)") {
+                            REQUIRE_EQ(n, glm::vec3(0, 1, 0));
                 }
             }
         }
@@ -138,51 +133,64 @@ TEST_SUITE("sphere") {
 
 
     SCENARIO ("normal on a sphere at a point on z axis") {
-                GIVEN("s=sphere()")
-        {
+                GIVEN("s=sphere()") {
             sphere s;
-                    WHEN("n=normal at(s,point(0,0,1))")
-            {
-                glm::vec3 n=s.get_normal_at_point(glm::vec3(0,0,1));
-                        THEN("n=vector(0,0,1)")
-                {
-                            REQUIRE_EQ(n,glm::vec3(0,0,1));
+                    WHEN("n=normal at(s,point(0,0,1))") {
+                glm::vec3 n = s.get_normal_at_point(glm::vec3(0, 0, 1));
+                        THEN("n=vector(0,0,1)") {
+                            REQUIRE_EQ(n, glm::vec3(0, 0, 1));
                 }
             }
         }
     }
 
     SCENARIO ("normal on a sphere at a nonaxial point") {
-        GIVEN("s=sphere()")
-        {
+                GIVEN("s=sphere()") {
             sphere s;
-            WHEN("n=normal at(s,point(sqrt(3)/3,sqrt(3)/3,sqrt(3)/3)")
-            {
-                glm::vec3 n=s.get_normal_at_point(glm::vec3(glm::sqrt(3)/3.0f));
-                THEN("n=vector(sqrt(3)/3,sqrt(3)/3,sqrt(3)/3)")
-                {
-                    REQUIRE_EQ(n.x,doctest::Approx(0.577350f));
-                    REQUIRE_EQ(n.y,doctest::Approx(0.577350f));
-                    REQUIRE_EQ(n.z,doctest::Approx(0.577350f));
+                    WHEN("n=normal at(s,point(sqrt(3)/3,sqrt(3)/3,sqrt(3)/3)") {
+                glm::vec3 n = s.get_normal_at_point(glm::vec3(glm::sqrt(3) / 3.0f));
+                        THEN("n=vector(sqrt(3)/3,sqrt(3)/3,sqrt(3)/3)") {
+                            REQUIRE_EQ(n.x, doctest::Approx(glm::sqrt(3.0f)/3.0f));
+                            REQUIRE_EQ(n.y, doctest::Approx(glm::sqrt(3.0f)/3.0f));
+                            REQUIRE_EQ(n.z, doctest::Approx(glm::sqrt(3.0f)/3.0f));
                 }
             }
         }
     }
 
-    SCENARIO ("sphere normal is normalized vector")
-    {
-        GIVEN("s=sphere()")
-        {
+    SCENARIO ("sphere normal is normalized vector") {
+                GIVEN("s=sphere()") {
             sphere s;
-            WHEN("n=normal at(s,point(sqrt(3)/3,sqrt(3)/3,sqrt(3)/3)")
+                    WHEN("n=normal at(s,point(sqrt(3)/3,sqrt(3)/3,sqrt(3)/3)") {
+                glm::vec3 n = s.get_normal_at_point(glm::vec3(glm::sqrt(3) / 3.0f));
+                        THEN("n=normalized(n)") {
+                    glm::vec3 norm_n = glm::normalize(n);
+                            REQUIRE(n.x == doctest::Approx(norm_n.x));
+                            REQUIRE(n.y == doctest::Approx(norm_n.y));
+                            REQUIRE(n.z == doctest::Approx(norm_n.z));
+                }
+            }
+        }
+    }
+
+
+    SCENARIO ("Computing normal on translated sphere")
+    {
+    GIVEN("s=sphere()") {
+        sphere s;
+            AND_THEN("set transform (s,tranlate(0,1,0))")
             {
-                glm::vec3 n=s.get_normal_at_point(glm::vec3(glm::sqrt(3)/3.0f));
-                        THEN("n=normalized(n)")
-                {
-                            glm::vec3 norm_n=glm::normalize(n);
-                            REQUIRE(n.x==doctest::Approx(norm_n.x));
-                            REQUIRE(n.y==doctest::Approx(norm_n.y));
-                            REQUIRE(n.z==doctest::Approx(norm_n.z));
+            s.set_model(glm::translate(s.model, glm::vec3(0, 1, 0)));
+                    WHEN("n=normal_at(s,point(0,1.70711,-0.70711)")
+                    {
+                    glm::vec3 n = s.get_normal_at_point(glm::vec3(0,1.70711f, -0.70711f));
+                   THEN("n=vector(0,0.70711,-0.70711)")
+                   {
+                       //glm::vec3 new_n=glm::normalize(glm::vec3(0,0.70711f,-0.70711f));
+                        REQUIRE_EQ(n.x, 0.0f);
+                       CHECK_EQ(n.y, doctest::Approx(0.70711f));
+                        REQUIRE_EQ(n.z, doctest::Approx(-0.70711f));
+                   }
                 }
             }
         }
