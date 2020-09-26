@@ -24,6 +24,7 @@ typedef struct ray//:public colider
         }
         return *this;
     }
-    glm::vec3 operator()(float t){ return pos+dir*t;}
+    glm::vec3 operator()(float t)const
+    { return pos+dir*t;}
 }ray;
 #endif //RAY_TRACER_RAY_HPP
