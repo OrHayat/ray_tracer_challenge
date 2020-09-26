@@ -7,15 +7,12 @@
 #include <rtc/core/collision_data.hpp>
 #include <rtc/core/ray.hpp>
 #include <glm/glm.hpp>
+#include "material.h"
+
 struct shape{
     glm::mat4 model=glm::mat4();
     glm::mat4 model_inv=glm::mat4();
-    glm::vec4 ka=glm::vec4(0);
-    glm::vec4 ks=glm::vec4(0);;
-    glm::vec4 kd=glm::vec4(0);;
-    glm::vec4 kr=glm::vec4(0);;
-    glm::vec4 kt=glm::vec4(0);;
-    float shininess=0.0f;
+    material mat;
     virtual collision_data collide(ray r)=0;
     virtual glm::vec3 get_normal_at_point(glm::vec3 point)=0;
     void set_model(const glm::mat4& model)

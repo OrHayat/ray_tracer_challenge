@@ -8,6 +8,10 @@
 #include <optional>
 
 struct shape;
+struct  collision_computation
+{
+    float t;
+};
 struct collision_data
 {
     std::vector<float> t;
@@ -17,5 +21,6 @@ struct collision_data
     collision_data(const collision_data& other);
     collision_data& operator= (const collision_data& other);
     std::optional<float>find_collision_value();
+
 };
 #endif //RAY_TRACER_COLLISION_DATA_HPP

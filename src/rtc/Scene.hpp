@@ -14,8 +14,40 @@
 #include <rtc/Camera.hpp>
 #include <rtc/Canvas.hpp>
 #include <glm/gtx/string_cast.hpp>
+//#include <rtc/core/ray.hpp>
+#include "algorithm"
+
+struct collision_with_scene_result_data
+{
+    float t;
+    shape * collided_shape;
+    collision_with_scene_result_data(float t, shape* s):t(t),collided_shape(s){};
+};
+struct collision_with_scene_result
+{
+std::vector<collision_with_scene_result_data>data;
+    collision_with_scene_result_data operator [](int i){return data[i];}
+};
+
 
 struct Scene {
+        collision_with_scene_result scene_ray_collide(ray r){
+        collision_with_scene_result res;
+        for(unsigned int i=0;i< this->objects.size();i++)
+        {
+            collision_data d= this->objects.at(i)->collide(r);
+            for(unsigned int j=0;j<d.t.size();++j)
+            {
+                collision_with_scene_result_data cur_data(d.t[j],&d.colided_shape);
+                res.data.push_back(cur_data);
+            }
+        }
+        std::sort(res.data.begin(),res.data.end(),[](collision_with_scene_result_data a,collision_with_scene_result_data b){
+            return a.t<b.t;
+        });
+        return res;
+
+    };
     std::vector<shape*> objects;
     std::vector<Camera>cameras;
     std::vector<light*>lights;
@@ -44,9 +76,9 @@ struct Scene {
         }
         if(collided.has_value())
         {
-            glm::vec4 ka=collided.value().colided_shape.ka;
-            glm::vec4 kd=collided.value().colided_shape.kd;
-            glm::vec4 ks=collided.value().colided_shape.ks;
+            glm::vec4 ka=collided.value().colided_shape.mat.ka;
+            glm::vec4 kd=collided.value().colided_shape.mat.kd;
+            glm::vec4 ks=collided.value().colided_shape.mat.ks;
             glm::vec3 intersection_point=ray_from_eye(min_t);
             glm::vec3 normal=glm::normalize(collided.value().colided_shape.get_normal_at_point(intersection_point));
             if(glm::dot(normal,-ray_from_eye.dir)<0)
@@ -85,7 +117,7 @@ struct Scene {
 //                   if(col_val.has_value())
                     if(col_val.has_value())
                     {
-                        if(col_val.value()<0.9999&&col_val.value()>0)
+                        if(col_val.value()>0&&(cur_light->type==light_type::directed_light||col_val.value()<=1.0f))
                         {
                             shadow=true;
                             break;
@@ -130,7 +162,7 @@ struct Scene {
 
                     glm::vec3 reflected_light_dir= glm::normalize(glm::reflect(-dir_to_lightsource,normal));
                     float specular_cos_theta=glm::dot(-ray_from_eye.dir,reflected_light_dir);
-                    resulting_color+=glm::vec3(intensity.x*ks.x,intensity.y*ks.y,intensity.z*ks.z)*glm::pow(specular_cos_theta,collided.value().colided_shape.shininess);
+                    resulting_color+=attenuation*glm::vec3(intensity.x*ks.x,intensity.y*ks.y,intensity.z*ks.z)*glm::pow(specular_cos_theta,collided.value().colided_shape.mat.shininess);
 //                glm::vec3 I lights.at(i)->get_lighting_from(intersection_point);
                 }
             }

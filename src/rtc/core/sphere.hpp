@@ -35,7 +35,6 @@ struct sphere:shape{
         float b=glm::dot((r.dir),(r.origin-center));
         float c=glm::dot((r.origin-center),(r.origin-center))-radius*radius;
         collision_data res(*this);
-        if (c > 0.0f && b > 0.0f) return res;
         float disc=b*b-a*c;
         if(disc<0)
         {

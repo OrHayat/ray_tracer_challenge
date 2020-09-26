@@ -9,19 +9,14 @@
 #include <rtc/core/collision_data.hpp>
 #include <rtc/core/sphere.hpp>
 #include <rtc/Camera.hpp>
+#include <rtc/Scene.hpp>
 #include <doctest/doctest.h>
 
 #define  GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 
-// Writes a generic GLM vector type to a stream.
-namespace glm {
-    template<int D, typename T, glm::qualifier P>
-    std::ostream &operator<<(std::ostream &os, const glm::vec<D, T, P> &v) {
-        return os << glm::to_string(v);
-    }
-}
+
 int main(int argc, char** argv) {
     doctest::Context context;
 
@@ -47,6 +42,276 @@ int main(int argc, char** argv) {
 
     return res + client_stuff_return_code; // the result from doctest is propagated here as well
 }
+//
+
+namespace glm {
+// Writes a generic GLM vector type to a stream.
+    template<int D, typename T, glm::qualifier P>
+    std::ostream &operator<<(std::ostream &os, const glm::vec<D, T, P> &v) {
+        return os << glm::to_string(v);
+    }
+    template<int C,int R, typename T, glm::qualifier P>
+    std::ostream &operator<<(std::ostream &os, const glm::mat<C,R, T, P> &mat) {
+        return os << glm::to_string(mat);
+    }
+    template<int count, typename T, glm::precision P>
+    bool operator==(const glm::vec<count, T, P> &v1, const glm::vec<count, doctest::Approx, P> &v2) {
+        for (int i = 0; i < count; i++) {
+            if (v1[i] != v2[i]) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
+bool operator == (const material& mat1,const material& mat2)
+{
+    return (doctest::Approx(mat1.shininess)==mat2.shininess)
+    &&mat1.ka==mat2.ka&&mat1.kd==mat2.kd&&mat1.kr==mat2.kr&&mat1.ks==mat2.ks&&mat1.kt==mat2.kt;
+}
+bool operator != (const material& mat1,const material& mat2)
+{
+    return !(mat1==mat2);
+}
+
+bool operator == (const light& light1,const light& light2)
+{
+    if(light1.type!=light2.type)
+    {
+        return false;
+    }
+    if(light1.intensity!=light2.intensity)
+    {
+        return false;
+    }
+    if(light1.dir!=light2.dir)
+    {
+        return false;
+    }
+    if(light1.pos!=light2.pos)
+    {
+        return false;
+    }
+    if(light1.cutoff_angel!=doctest::Approx(light2.cutoff_angel))
+    {
+        return false;
+    }
+    if(light1.kc!=doctest::Approx(light2.kc))
+    {
+        return false;
+    }
+    if(light1.kl!=doctest::Approx(light2.kl))
+    {
+        return false;
+    }
+    if(light1.kq!=doctest::Approx(light2.kq))
+    {
+        return false;
+    }
+    return true;
+}
+bool operator != (const light& light1,const light& light2)
+{
+    return !(light1==light2);
+}
+bool operator==(const sphere& s1, const sphere& s2) {
+    if(s1.model!=s2.model)
+    {
+        return false;
+    }
+    if(s1.model_inv!=s2.model_inv)
+    {
+        return false;
+    }
+    if(s1.center!=s2.center)
+    {
+
+        return false;
+    }
+    if(s1.radius!=doctest::Approx(s2.radius))
+    {
+        return false;
+    }
+    if(s1.mat!=s2.mat)
+    {
+        return false;
+    }
+    return true;
+}
+
+
+std::ostream &operator<<(std::ostream &os, const material s) {
+    return os<<"material(ka:"<<s.ka<<"kd:"<<s.kd<<",ks:"<<s.ks<<"\nkr:"<<s.kr<<",kt:"<<s.kt<<",shininess:"<<s.shininess;
+}
+
+
+std::ostream &operator<<(std::ostream &os, const light& l) {
+   return os<<"light(type:"<<l.type<<", intensity:"<<l.intensity<<",pos\n"<<l.pos<<",direction:"<<l.dir<<",cutoff_angle:"<<l.cutoff_angel<<"\nkc:"<<l.kc<<",kl:"<<l.kl<<",kq:"<<l.kq<<")";
+}
+
+
+std::ostream &operator<<(std::ostream &os, const sphere& s) {
+    return os<<"sphere(model:"<<s.model<<"\nmodel_inv:"<<s.model_inv<<"\ncenter:"<<s.center<<",radius:"<<s.radius<<"\nmat:"<<s.mat;
+}
+Scene default_scene()
+{
+    Scene res;
+    light* l=light::make_point_light_ptr(glm::vec3(-10,10,-10));
+    l->intensity=glm::vec4(1.0f);
+    res.lights.push_back(l);
+    sphere* s=new sphere();
+    s->mat.ka=glm::vec4(0.8f,1.0f,0.6f,1.0f);
+    s->mat.kd=glm::vec4(0.7f,0.7f,0.7f,1.0f);
+    s->mat.ks=glm::vec4(0.2f,0.2f,0.2,1.0f);
+    sphere* s2=new sphere();
+    s2->set_model(glm::scale(glm::mat4(),glm::vec3(0.5f)));
+    res.objects.push_back(s);
+    res.objects.push_back(s2);
+    return  res;
+}
+
+TEST_SUITE("scene") {
+    SCENARIO ("Creating a scene") {
+                GIVEN(" s ← scene()") {
+            Scene s;
+                    THEN("s contains no objects") {
+                        REQUIRE_EQ(0, s.objects.size());
+                        AND_THEN(" s has no light source") {
+                            REQUIRE_EQ(0, s.lights.size());
+                }
+            }
+        }
+    }
+
+
+    SCENARIO ("The default world")
+    {
+        GIVEN(" light ← point_light(point(-10, 10, -10), color(1, 1, 1))")
+        {
+            light *point_light = light::make_point_light_ptr(glm::vec3(-10, 10, -10));
+            point_light->intensity=glm::vec4(1.0f);
+            AND_WHEN("s1 ← sphere() with:| material.color=(0.8, 1.0, 0.6,1) ,material.diffuse=(0.7,0.7,0.7,1),.material.specular(0.2,0.2,0.2,1)")
+            {
+                sphere s1;
+                s1.mat.ka=glm::vec4(0.8,1.0f,0.6,1.0f);
+                s1.mat.kd=glm::vec4(0.7f,0.7f,0.7f,1.0f);
+                s1.mat.ks=glm::vec4(0.2f,0.2f,0.2f,1.0f);
+                AND_WHEN("s2 ← sphere() with:transform | scaling(0.5, 0.5, 0.5) |")
+                {
+                    sphere s2;
+                    s2.set_model(glm::scale(glm::vec3(0.5f)));
+                    WHEN("w ← default_world()")
+                    {
+                        Scene s=default_scene();
+                        REQUIRE_EQ(s.objects.size(),2);
+                                THEN ("s.light = light")
+                        {
+                                    REQUIRE_EQ(s.lights.size(),1);
+                                    REQUIRE_EQ(*s.lights.at(0),*point_light);
+                        }
+                         THEN("s.objects contain s1 ")
+                        {
+                            bool found=false;
+                            for(unsigned int i=0;(!found)&&i<s.objects.size();i++)
+                            {
+                                sphere* tmp=dynamic_cast<sphere*>(s.objects.at(i));
+                                if(tmp!=nullptr)
+                                {
+                                    found= (*tmp==s1);
+                                }
+                            }
+                        REQUIRE(found);
+                        }
+                        THEN("s.objects contain s2 ")
+                        {
+                            bool found_s2=false;
+                            for(unsigned int i=0;!found_s2&&i<s.objects.size();i++)
+                            {
+                                sphere* tmp=dynamic_cast<sphere*>(s.objects.at(i));
+                                if(tmp!=nullptr)
+                                {
+                                    found_s2= (*tmp==s2);
+                                }
+                            }
+                                    REQUIRE(found_s2);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+
+
+
+
+    SCENARIO("Intersect a world with a ray")
+    {
+        GIVEN("w ← default_world()")
+        {
+            Scene w=default_scene();
+            AND_WHEN("r ← ray(point(0, 0, -5), vector(0, 0, 1))")
+            {
+                ray r=ray(glm::vec3(0,0,-5),glm::vec3(0,0,1));
+                {
+                    WHEN("xs ← intersect_world(w, r)")
+                    {
+                        collision_with_scene_result xs=w.scene_ray_collide(r);
+                        THEN("xs.count==4")
+                        {
+                            REQUIRE_EQ(xs.data.size(),4);
+                            AND_THEN("xs[0].t==4")
+                            {
+                                REQUIRE_EQ(xs[0].t,doctest::Approx(4.0f));
+                            }
+                                    AND_THEN("xs[1].t==4.5")
+                            {
+                                REQUIRE_EQ(xs[1].t,doctest::Approx(4.5f));
+                            }
+                                    AND_THEN("xs[2].t==5.5")
+                            {
+                                REQUIRE_EQ(xs[2].t,doctest::Approx(5.5f));
+
+                            }
+                                    AND_THEN("xs[3].t==6")
+                            {
+                                REQUIRE_EQ(xs[3].t,doctest::Approx(6.0f));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    SCENARIO("Shading an intersection")
+    {
+        GIVEN("w ← default_world()")
+        {
+            Scene s=default_scene();
+            AND_WHEN(" r ← ray(point(0, 0, -5), vector(0, 0, 1))")
+            {
+                ray r(glm::vec3(0,0,-5),glm::vec3(0,0,1));
+
+            AND_WHEN("shape ← the first object in w")
+                {
+                shape* shape=s.objects.at(0);
+                AND_WHEN(" i ← intersection(r, shape)")
+                    {
+                    collision_data i=shape->collide(r);
+
+                    }
+                }
+            }
+        }
+    }
+    When comps ← prepare_computations(i, r)
+    And c ← shade_hit(w, comps)
+    Then c = color(0.38066, 0.47583, 0.2855)
+}
+
 
 
 
@@ -173,6 +438,7 @@ TEST_SUITE("sphere") {
                     WHEN("n=normal at(s,point(sqrt(3)/3,sqrt(3)/3,sqrt(3)/3)") {
                 glm::vec3 n = s.get_normal_at_point(glm::vec3(glm::sqrt(3) / 3.0f));
                         THEN("n=vector(sqrt(3)/3,sqrt(3)/3,sqrt(3)/3)") {
+                            REQUIRE_EQ(n,glm::vec3(glm::sqrt(3.0f)/3.0f));
                             REQUIRE_EQ(n.x, doctest::Approx(glm::sqrt(3.0f) / 3.0f));
                             REQUIRE_EQ(n.y, doctest::Approx(glm::sqrt(3.0f) / 3.0f));
                             REQUIRE_EQ(n.z, doctest::Approx(glm::sqrt(3.0f) / 3.0f));
@@ -215,16 +481,6 @@ TEST_SUITE("sphere") {
         }
     }
 
-/*
- *
-Scenario: Computing the normal on a transformed sphere
-  Given s ← sphere()
-    And m ← scaling(1, 0.5, 1) * rotation_z(π/5)
-    And set_transform(s, m)
-  When n ← normal_at(s, point(0, √2/2, -√2/2))
-  Then n = vector(0, 0.97014, -0.24254)*/
-
-
     SCENARIO ("Computing normal on transformed sphere")
     {
             GIVEN("s=sphere()") {
@@ -246,6 +502,119 @@ Scenario: Computing the normal on a transformed sphere
                                 CHECK_EQ(doctest::Approx(0.97014f),n.y);
                                 CHECK_EQ(doctest::Approx(-0.24254),n.z);
                             }
+                    }
+                }
+            }
+        }
+    }
+
+    SCENARIO("A sphere's default transformation")
+    {
+        GIVEN("s ← sphere()")
+        {
+            sphere s;
+            THEN("s.transform == identity_matrix")
+            {
+                REQUIRE_EQ(s.model,glm::mat4());
+            }
+        }
+    }
+    SCENARIO("Changing a sphere's transformation")
+    {
+        GIVEN("s ← sphere()")
+        {
+            sphere s;
+            AND_WHEN("t ← translation(2, 3, 4)")
+            {
+                glm::mat4 t=glm::translate(glm::vec3(2,3,4));
+                WHEN("set_transform(s, t)")
+                {
+                    s.set_model(t);
+                    THEN("S.transform==t")
+                    {
+                        REQUIRE_EQ(s.model,t);
+                    }
+                }
+            }
+        }
+    }
+
+    SCENARIO("Intersecting a scaled sphere with a ray")
+    {
+        GIVEN("r ← ray(point(0, 0, -5), vector(0, 0, 1))")
+        {
+            ray r(glm::vec3(0,0,-5),glm::vec3(0,0,1));
+            {
+             AND_WHEN("s ← sphere()")
+                {
+                 sphere s;
+                 WHEN("set_transform(s, scaling(2, 2, 2))")
+                    {
+                     s.set_model(glm::scale(glm::vec3(2.0f)));
+                     AND_WHEN("xs ← intersect(s, r)")
+                        {
+                         collision_data xs=s.collide(r);
+                         THEN("xs.t.size()==2")
+                            {
+                             REQUIRE_EQ(xs.t.size(),2);
+
+                                AND_THEN("xs.t[0]==3")
+                                {
+                                    REQUIRE_EQ(xs.t[0],doctest::Approx(3.0f));
+                                }
+                                AND_THEN("xs.t[1]==7")
+                                {
+                                    REQUIRE_EQ(xs.t[1],doctest::Approx(7.0f));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+/*
+
+
+    And xs[0].t = 3
+    And xs[1].t = 7*/
+
+
+
+    SCENARIO("A sphere has a default material")
+    {
+        GIVEN("s ← sphere()")
+        {
+            sphere s=sphere();
+            WHEN("m ← s.material")
+            {
+                material m=s.mat;
+                THEN(" m = material()")
+                {
+                    REQUIRE_EQ(m,material());
+                }
+            }
+        }
+    }
+    SCENARIO(" A sphere may be assigned a material")
+    {
+        GIVEN("s ← sphere()")
+        {
+            sphere s;
+            AND_WHEN("m ← material()")
+            {
+                material m=material();
+                AND_WHEN(" m.ka ← 1")
+                {
+                    m.ka=glm::vec4(1.0f);
+                }
+                AND_WHEN(" s.material ← m")
+                {
+                    s.mat=m;
+                    THEN("s.material == m")
+                    {
+                        REQUIRE_EQ(s.mat,m);
                     }
                 }
             }
@@ -275,9 +644,9 @@ TEST_SUITE("ray")
                     {
                         REQUIRE_EQ(r.pos,origin);
                     }
-                    AND_THEN("r.direction==direction after normalization")
+                    AND_THEN("r.direction==direction ")
                     {
-                        REQUIRE_EQ(r.dir,glm::normalize(direction));
+                        REQUIRE_EQ(r.dir,direction);
                     }
 //                    std::cout<<glm::to_string(direction)<<std::endl;
                 }
@@ -302,7 +671,7 @@ TEST_SUITE("ray")
             {
                         REQUIRE_EQ(r(-1),glm::vec3(1.0f,3.0f,4.0f));
             }
-                    THEN("position at t=2.5 is (3,3,4)")
+                    THEN("position at t=2.5 is (4.5,3,4)")
             {
                         REQUIRE_EQ(r(2.5),glm::vec3(4.5,3.0f,4.0f));
             }
@@ -357,33 +726,172 @@ TEST_SUITE("ray")
             }
         }
     }
-}
-
-TEST_SUITE("camera")
-{
-    SCENARIO("The pixel size for horrizontal canvas")
+    SCENARIO("A ray originates inside a sphere")
     {
-        GIVEN("c= camera(200,125,math.pi/2)")
+        GIVEN("r ← ray(point(0, 0, 0), vector(0, 0, 1))")
         {
-            Camera c(200,125,glm::pi<float>()*0.5f);
-            THEN("c.pixel_size is 0.001")
+            ray r(glm::vec3(0),glm::vec3(0,0,1));
+            AND_WHEN("s ← sphere()")
             {
-                REQUIRE_EQ(doctest::Approx(0.01),c.pixel_size);
+                sphere s;
+                WHEN("xs ← intersect(s, r)")
+                {
+                    collision_data xs=s.collide(r);
+                    THEN("xs.count ==2")
+                    {
+                        REQUIRE_EQ(xs.t.size(),2);
+                        AND_THEN("xs[0] = -1.0")
+                        {
+                            REQUIRE_EQ(xs.t[0],-1.0f);
+                        }
+                                AND_THEN("xs[1] = 1.0")
+                        {
+                                    REQUIRE_EQ(xs.t[1],1.0f);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    SCENARIO("A sphere is behind ray")
+    {
+        GIVEN("r ← ray(point(0, 0, 5), vector(0, 0, 1))")
+        {
+            ray r(glm::vec3(0,0,5),glm::vec3(0,0,1));
+            AND_WHEN("s ← sphere()")
+            {
+                sphere s;
+                    WHEN("xs ← intersect(s, r)")
+                {
+                    std::cout<<"test starting"<<std::endl;
+                    collision_data xs=s.collide(r);
+                    THEN("xs.count ==2")
+                    {
+                        REQUIRE_EQ(xs.t.size(),2);
+                        AND_THEN("xs[0] = -6.0")
+                        {
+                                    REQUIRE_EQ(xs.t[0],-6.0f);
+                        }
+                                AND_THEN("xs[1] = 4.0")
+                        {
+                                    REQUIRE_EQ(xs.t[1],-4.0f);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    SCENARIO("Intersect sets the object on the intersection")
+    {
+        GIVEN(" r ← ray(point(0, 0, -5), vector(0, 0, 1))")
+        {
+            ray r(glm::vec3(0,0,-5.0f),glm::vec3(0,0,1));
+            AND_WHEN("s ← sphere()")
+            {
+                sphere s;
+                WHEN("xs ← intersect(s, r)")
+                {
+                    collision_data xs=s.collide(r);
+                    THEN("xs.count=2")
+                    {
+                        REQUIRE_EQ(xs.t.size(),2);
+                        AND_THEN("xs.collided_shape is s")
+                        {
+                            REQUIRE_EQ(&xs.colided_shape,&s);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+#if 0
+TEST_SUITE("camera") {
+    SCENARIO ("The pixel size for horrizontal canvas") {
+                GIVEN("c= camera(200,125,math.pi/2)") {
+            Camera c(200, 125, glm::pi<float>() * 0.5f);
+                    THEN("c.pixel_size is 0.001") {
+                        REQUIRE_EQ(doctest::Approx(0.01), c.pixel_size);
             }
         }
     }
 
 
-    SCENARIO("The pixel size for vertical canvas")
-    {
-                GIVEN("c= camera(125,200,math.pi/2)")
-        {
-            Camera c(125,200,glm::pi<float>()*0.5f);
-                    THEN("c.pixel_size is 0.001")
-            {
-                        REQUIRE_EQ(doctest::Approx(0.01),c.pixel_size);
+    SCENARIO ("The pixel size for vertical canvas") {
+                GIVEN("c= camera(125,200,math.pi/2)") {
+            Camera c(125, 200, glm::pi<float>() * 0.5f);
+                    THEN("c.pixel_size is 0.001") {
+                        REQUIRE_EQ(doctest::Approx(0.01), c.pixel_size);
             }
         }
     }
 
+    SCENARIO ("Constructing a ray through the center of the canvas") {
+                GIVEN ("c ← camera(201, 101, π/2)") {
+            Camera c(201, 101, glm::pi<float>() / 2.0f);
+                    WHEN("r ← ray_for_pixel(c, 100, 50)") {
+                ray r = c.RayForPixel(100, 50);
+                        THEN("r.origin = point(0, 0, 0)") {
+                            REQUIRE_EQ(r.origin.x, doctest::Approx(0));
+                            REQUIRE_EQ(r.origin.y, doctest::Approx(0));
+                            REQUIRE_EQ(r.origin.z, doctest::Approx(0));
+                            AND_THEN ("r.direction = vector(0, 0, -1)") {
+                                REQUIRE_EQ(r.dir.x, doctest::Approx(0));
+                                REQUIRE_EQ(r.dir.y, doctest::Approx(0));
+                                REQUIRE_EQ(r.dir.z, doctest::Approx(-1));
+                    }
+                }
+            }
+        }
+    }
+
+    SCENARIO ("Constructing a ray through a corner of the canvas")
+    {
+    GIVEN(" c ← camera(201, 101, π/2)")
+    {
+        Camera c(201, 101, glm::pi<float>() / 2.0f);
+        WHEN("r ← ray_for_pixel(c, 0, 0)") {
+            ray r=c.RayForPixel(0,0);
+            THEN("r.origin == point(0, 0, 0)") {
+                REQUIRE_EQ(r.origin.x, doctest::Approx(0));
+                REQUIRE_EQ(r.origin.y, doctest::Approx(0));
+                REQUIRE_EQ(r.origin.z, doctest::Approx(0));
+                AND_THEN("r.direction == vector(0.66519, 0.33259, -0.66851))")
+                    {
+                        REQUIRE_EQ(r.dir.x, doctest::Approx(0.66519));
+                        REQUIRE_EQ(r.dir.y, doctest::Approx(0.33259));
+                        REQUIRE_EQ(r.dir.z, doctest::Approx(-0.66851));
+                    }
+                }
+            }
+        }
+    }
+
+
+    SCENARIO("Constructing a ray when the camera is transformed") {
+                GIVEN("c ← camera(201, 101, π/2)") {
+                Camera c(201, 101, glm::pi<float>() / 2.0f);
+            WHEN("c.transform ← rotation_y(π/4) * translation(0, -2, 5)") {
+                c.camera_to_world_view=glm::rotate(glm::translate(glm::mat4(),glm::vec3(0,-2.0f,5.0f))
+                        ,glm::pi<float>()/4.0f,glm::vec3(0,1,0));
+                        AND_WHEN("r ← ray_for_pixel(c, 100, 50)") {
+                            ray r=c.RayForPixel(100.0f,50.0f);
+                            THEN ("r.origin = point(0, 2, -5)") {
+                                REQUIRE_EQ(r.origin.x,doctest::Approx(0.0f));
+                                REQUIRE_EQ(r.origin.y,doctest::Approx(2.0f));
+                                REQUIRE_EQ(r.origin.z,doctest::Approx(-5.0f));
+                        AND_THEN("r.direction = vector(√2/2, 0, -√2/2)")
+                        {
+                            REQUIRE_EQ(r.dir.x,doctest::Approx(glm::sqrt(2.0f)/2.0f));
+                            REQUIRE_EQ(r.dir.y,doctest::Approx(0.0f));
+                            REQUIRE_EQ(r.dir.z,doctest::Approx(-glm::sqrt(2.0f)/2.0f));
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
+#endif

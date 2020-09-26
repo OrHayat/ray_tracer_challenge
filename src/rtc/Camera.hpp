@@ -11,7 +11,7 @@ struct Camera {
     unsigned int image_width;
     unsigned int image_height;
     float fov;
-    glm::mat4 camera_to_world_view;
+    glm::mat4 camera_to_world_view=glm::mat4();
     float half_width;
     float half_height;
     float pixel_size;
