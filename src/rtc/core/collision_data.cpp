@@ -43,23 +43,16 @@ collision_computation::collision_computation(float t,
 {
 }
 
-static std::optional<collision_computation> prepare_computations(const ray& r,const  collision_data& col_data)
+collision_computation collision_computation::prepare_collision(const ray& ray_from_eye,const float t,shape& collided_shape)
 {
-    std::optional<float> col_t = col_data.find_collision_value();
-    if(!col_t)
-    {
-        return {};
-    }
-    float t=col_t.value();
-    shape& colided_shape=col_data.colided_shape;
-    glm::vec3 intersection_point=r(t);
-    glm::vec3 dir_from_intersection_to_eye=-r.dir;
-    glm::vec3 intersection_point_normal=colided_shape.get_normal_at_point(intersection_point);
+    glm::vec3 intersection_point=ray_from_eye(t);
+    glm::vec3 dir_from_intersection_to_eye=-ray_from_eye.dir;
+    glm::vec3 intersection_point_normal=glm::normalize(collided_shape.get_normal_at_point(intersection_point));
     bool inside=false;
     if(glm::dot(intersection_point_normal,dir_from_intersection_to_eye)<0)
     {
         intersection_point_normal=-intersection_point_normal;
         inside=true;
     }
-    return std::make_optional(collision_computation(t,colided_shape,intersection_point,dir_from_intersection_to_eye,intersection_point_normal,inside));
+    return collision_computation(t,collided_shape,intersection_point,dir_from_intersection_to_eye,intersection_point_normal,inside);
 }

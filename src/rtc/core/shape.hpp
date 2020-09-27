@@ -14,7 +14,7 @@ struct shape{
     glm::mat4 model_inv=glm::mat4();
     material mat;
     virtual collision_data collide(ray r)=0;
-    virtual glm::vec3 get_normal_at_point(glm::vec3 point)=0;
+    virtual glm::vec3 get_normal_at_point(glm::vec3 point)const=0;
     void set_model(const glm::mat4& model)
     {
         this->model=model;

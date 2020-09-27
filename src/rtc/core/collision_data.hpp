@@ -8,6 +8,9 @@
 #include <optional>
 
 struct shape;
+struct collision_computation;
+struct collision_data;
+struct ray;
 
 struct collision_data
 {
@@ -29,10 +32,9 @@ struct  collision_computation
     glm::vec3 dir_from_intersection_to_eye;
     glm::vec3 intersection_point_normal;
     bool inside;
-    static std::optional<collision_computation> prepare_computations(const ray& r,const  collision_data& col_data);
-
     collision_computation(float t,shape& colided_shape,glm::vec3 intersection_point,glm::vec3 dir_from_intersection_to_eye,glm::vec3 intersection_point_normal,bool inside);
-//private:
-//    collision_computation()=delete;
+    static collision_computation prepare_collision(const ray &ray_from_eye,const float t,shape& collided_shape);
+    //    static std::optional<struct collision_computation>   foo(const ray& r,const  collision_data& col_data);
+    collision_computation()=delete;
 };
 #endif //RAY_TRACER_COLLISION_DATA_HPP

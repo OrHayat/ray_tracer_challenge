@@ -15,7 +15,7 @@ struct sphere:shape{
     sphere():center(glm::vec3(0)),radius(1.0f){}
     explicit sphere(float radius):center(glm::vec3(0)),radius(radius){}//initalzing sphere on center of world
     sphere(float radius,const glm::vec3& center):center(center),radius(radius){};
-    glm::vec3 get_normal_at_point(glm::vec3 point) override
+    glm::vec3 get_normal_at_point(glm::vec3 point)const override
     {
         glm::vec4 objectPoint = this->model_inv*glm::vec4(point,1);
         glm::vec4 object_normal=glm::vec4(objectPoint.xyz()-center,0);

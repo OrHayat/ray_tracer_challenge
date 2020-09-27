@@ -301,15 +301,24 @@ TEST_SUITE("scene") {
                 AND_WHEN(" i ← intersection(r, shape)")
                     {
                     collision_data i=shape->collide(r);
+                    WHEN("comps ← prepare_computations(i, r)")
+                        {
+                        std::optional<collision_computation> comps=collision_computation::prepare_collision(r,i);
+                        if(!comps)
+                            {
+                                FAIL("should suceed finding the collision data");
+                            }
+                        s.render_block()
+                                    FAIL("not done yet");//TODO
+//    And c ← shade_hit(w, comps)
+//    Then c = color(0.38066, 0.47583, 0.2855)
 
+                        }
                     }
                 }
             }
         }
     }
-    When comps ← prepare_computations(i, r)
-    And c ← shade_hit(w, comps)
-    Then c = color(0.38066, 0.47583, 0.2855)
 }
 
 

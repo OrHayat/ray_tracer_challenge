@@ -55,6 +55,96 @@ struct Scene {
     int max_depth=50;
     int selected_camera;
 
+    glm::vec3 shade_hit(const collision_computation& collision_comp)
+    {
+
+            glm::vec4 ka=collision_comp.collided_shape.mat.ka;
+            glm::vec4 kd=collision_comp.collided_shape.mat.kd;
+            glm::vec4 ks=collision_comp.collided_shape.mat.ks;
+//            glm::vec3 intersection_point=collision_compray_from_eye(collision_comp.t);
+//            glm::vec3 normal=glm::normalize(collided.value().colided_shape.get_normal_at_point(collision_comp.intersection_point));
+//            if(glm::dot(normal,-ray_from_eye.dir)<0)
+//            {
+//                normal=-normal;
+//            }
+            glm::vec3 resulting_color=glm::vec3(0);
+            for(unsigned int i=0;i<lights.size();i++)
+            {
+                light* cur_light= this->lights.at(i);
+                glm::vec3 dir_to_lightsource;
+                if(cur_light->type==light_type::directed_light)
+                {
+                    dir_to_lightsource=-cur_light->dir;
+                }
+                else {//point light or spotlight
+                    dir_to_lightsource=(cur_light->pos - collision_comp.intersection_point);
+//                    std::cout<<"cur lightsource pos is:"<<glm::to_string(cur_light->pos)<<",,,, and intersection point is: "<<glm::to_string(intersection_point)<<std::endl;
+                }
+
+                if(cur_light->type==light_type::spot_light)
+                {
+
+                    float cos_theta=glm::dot(glm::normalize(dir_to_lightsource),collision_comp.intersection_point_normal);
+                    if(cos_theta>cur_light->cutoff_angel)//the angle is between 0 and 180 degress so for x1,x2 if x2>x1 cos(x1)>cos(x2)
+                    {
+                        continue;
+                    }
+                }
+                ray shadow_ray(collision_comp.intersection_point+collision_comp.intersection_point_normal*0.005f,dir_to_lightsource);
+                bool shadow=false;
+                for(unsigned obj_id=0;obj_id<objects.size();++obj_id)
+                {
+                    collision_data shadow_ray_collision=objects.at(obj_id)->collide(shadow_ray);
+                    std::optional<float>col_val= shadow_ray_collision.find_collision_value();
+//                   if(col_val.has_value())
+                    if(col_val.has_value())
+                    {
+                        if(col_val.value()>0&&(cur_light->type==light_type::directed_light||col_val.value()<=1.0f))
+                        {
+                            shadow=true;
+                            break;
+                        }
+                    }
+                }
+                if(!shadow) {
+//                    std::cout<<"no shadowwwwwwwwwwwwwwwwwwwww light id="<<i<<std::endl;
+                    dir_to_lightsource=glm::normalize(dir_to_lightsource);
+
+                    glm::vec3 intensity;
+                    float attenuation=1.0f;
+                    switch (cur_light->type) {
+                        case light_type::point_light:
+                        {
+                            float dist=glm::distance(cur_light->pos,collision_comp.intersection_point);
+                            attenuation=1/(((cur_light->kq*dist)+cur_light->kl)*dist+cur_light->kc);
+                            intensity=cur_light->intensity*attenuation;
+                            break;
+                        }
+                        case light_type::directed_light:
+                        {
+                            intensity=cur_light->intensity*glm::dot(collision_comp.intersection_point_normal,cur_light->dir);
+                            break;
+                        }
+                        case light_type::spot_light:
+                        {
+                            float dist=glm::distance(cur_light->pos,collision_comp.intersection_point);
+                            attenuation=1/(((cur_light->kq*dist)+cur_light->kl)*dist+cur_light->kc);
+                            intensity=cur_light->intensity*glm::dot(collision_comp.intersection_point_normal,cur_light->dir)*attenuation;
+                            break;
+                        }
+                    }
+                    resulting_color += glm::vec3(intensity.x*kd.x,intensity.y*kd.y,intensity.z*kd.z) * glm::dot(collision_comp.intersection_point_normal, dir_to_lightsource);//diffuse
+
+                    glm::vec3 reflected_light_dir= glm::normalize(glm::reflect(-dir_to_lightsource,collision_comp.intersection_point_normal));
+                    float specular_cos_theta=glm::dot(collision_comp.dir_from_intersection_to_eye,reflected_light_dir);
+                    resulting_color+=attenuation*glm::vec3(intensity.x*ks.x,intensity.y*ks.y,intensity.z*ks.z)*glm::pow(specular_cos_theta,collision_comp.collided_shape.mat.shininess);
+//                glm::vec3 I lights.at(i)->get_lighting_from(intersection_point);
+                }
+            }
+            resulting_color+=glm::vec3(ka.x*I_ambient.x,ka.y*I_ambient.y,ka.z*I_ambient.z);
+            return resulting_color;
+        }
+
     glm::vec3 render_block(float x,float y,int block_size_x,int block_size_y,int depth)
     {
         ray ray_from_eye = cameras[selected_camera].RayForPixel(x,y);
@@ -74,103 +164,16 @@ struct Scene {
                 }
             }
         }
-        if(collided.has_value())
-        {
-            glm::vec4 ka=collided.value().colided_shape.mat.ka;
-            glm::vec4 kd=collided.value().colided_shape.mat.kd;
-            glm::vec4 ks=collided.value().colided_shape.mat.ks;
-            glm::vec3 intersection_point=ray_from_eye(min_t);
-            glm::vec3 normal=glm::normalize(collided.value().colided_shape.get_normal_at_point(intersection_point));
-            if(glm::dot(normal,-ray_from_eye.dir)<0)
-            {
-                normal=-normal;
-            }
-            glm::vec3 resulting_color=glm::vec3(0);
-            for(unsigned int i=0;i<lights.size();i++)
-            {
-                light* cur_light= this->lights.at(i);
-                glm::vec3 dir_to_lightsource;
-                if(cur_light->type==light_type::directed_light)
-                {
-                    dir_to_lightsource=-cur_light->dir;
-                }
-                else {//point light or spotlight
-                    dir_to_lightsource=(cur_light->pos - intersection_point);
-//                    std::cout<<"cur lightsource pos is:"<<glm::to_string(cur_light->pos)<<",,,, and intersection point is: "<<glm::to_string(intersection_point)<<std::endl;
-                }
-
-                if(cur_light->type==light_type::spot_light)
-                {
-
-                    float cos_theta=glm::dot(glm::normalize(dir_to_lightsource),normal);
-                    if(cos_theta>cur_light->cutoff_angel)//the angle is between 0 and 180 degress so for x1,x2 if x2>x1 cos(x1)>cos(x2)
-                    {
-                        continue;
-                    }
-                }
-                ray shadow_ray(intersection_point+normal*0.005f,dir_to_lightsource);
-                bool shadow=false;
-                for(unsigned obj_id=0;obj_id<objects.size();++obj_id)
-                {
-                   collision_data shadow_ray_collision=objects.at(obj_id)->collide(shadow_ray);
-                   std::optional<float>col_val= shadow_ray_collision.find_collision_value();
-//                   if(col_val.has_value())
-                    if(col_val.has_value())
-                    {
-                        if(col_val.value()>0&&(cur_light->type==light_type::directed_light||col_val.value()<=1.0f))
-                        {
-                            shadow=true;
-                            break;
-                        }
-                        else {
-//                            std::cout << "colission for light:" << i <<
-//                                      "with object" << obj_id << "is at t="
-//                                      << col_val.value() << "with position:"
-//                                      << glm::to_string(shadow_ray(col_val.value())) //<< std::endl
-//                                      <<"shadow ray dir is"<<glm::to_string(shadow_ray.dir)<<std::endl;
-                        }
-                    }
-                }
-                if(!shadow) {
-//                    std::cout<<"no shadowwwwwwwwwwwwwwwwwwwww light id="<<i<<std::endl;
-                    dir_to_lightsource=glm::normalize(dir_to_lightsource);
-
-                    glm::vec3 intensity;
-                    float attenuation=1.0f;
-                    switch (cur_light->type) {
-                        case light_type::point_light:
-                        {
-                            float dist=glm::distance(cur_light->pos,intersection_point);
-                            attenuation=1/(((cur_light->kq*dist)+cur_light->kl)*dist+cur_light->kc);
-                            intensity=cur_light->intensity*attenuation;
-                            break;
-                        }
-                        case light_type::directed_light:
-                        {
-                            intensity=cur_light->intensity*glm::dot(normal,cur_light->dir);
-                            break;
-                        }
-                        case light_type::spot_light:
-                        {
-                            float dist=glm::distance(cur_light->pos,intersection_point);
-                            attenuation=1/(((cur_light->kq*dist)+cur_light->kl)*dist+cur_light->kc);
-                            intensity=cur_light->intensity*glm::dot(normal,cur_light->dir)*attenuation;
-                            break;
-                        }
-                    }
-                    resulting_color += glm::vec3(intensity.x*kd.x,intensity.y*kd.y,intensity.z*kd.z) * glm::dot(normal, dir_to_lightsource);//diffuse
-
-                    glm::vec3 reflected_light_dir= glm::normalize(glm::reflect(-dir_to_lightsource,normal));
-                    float specular_cos_theta=glm::dot(-ray_from_eye.dir,reflected_light_dir);
-                    resulting_color+=attenuation*glm::vec3(intensity.x*ks.x,intensity.y*ks.y,intensity.z*ks.z)*glm::pow(specular_cos_theta,collided.value().colided_shape.mat.shininess);
-//                glm::vec3 I lights.at(i)->get_lighting_from(intersection_point);
-                }
-            }
-            resulting_color+=glm::vec3(ka.x*I_ambient.x,ka.y*I_ambient.y,ka.z*I_ambient.z);
-            return resulting_color;
+        if(collided.has_value()) {
+            collision_computation comp = collision_computation::prepare_collision(ray_from_eye,
+                                                                                  min_t,
+                                                                                  collided.value().colided_shape);
+            return this->shade_hit(comp);
         }
         return  glm::vec3(0,0,0);
     }
+
+
     Canvas<glm::vec3> render()
     {
         int nonzeros_pixels=0;
