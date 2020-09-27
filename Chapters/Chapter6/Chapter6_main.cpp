@@ -19,11 +19,11 @@ int main(int argc, char** argv)
 {
     Scene s;
     Camera cam(650,400,glm::pi<float>()/2);
-    cam.camera_to_world_view=glm::scale(glm::translate(glm::mat4(1.0f),glm::vec3(0,0,4)),glm::vec3(-1,-1,1));
+    cam.set_transform(glm::scale(glm::translate(glm::mat4(),glm::vec3(0,0,-4)),glm::vec3(-1,-1,1)));
     s.I_ambient=glm::vec4(0.6f,0.4f,0.5f,1.0f);
     s.selected_camera=0;
     s.cameras.push_back(cam);
-    sphere* sphere_= new sphere(12);
+    sphere* sphere_= new sphere(1);
     material mat_;
     mat_.ka=glm::vec4(0.85f,0.35f,0.2f,1.0f);
     mat_.kd=glm::vec4(0.65f,0.85f,0.5f,1.0f);
@@ -53,7 +53,7 @@ int main(int argc, char** argv)
         res.data[i]=can.data[i];
     }
 //    res.draw_circle(glm::ivec2(450,350),30,glm::u8vec3(0,255,0),6);
-    int x=stbi_write_bmp("./output1234.bmp",res.width,res.height,3,res.data);
+    int x=stbi_write_bmp("./chapter6.bmp",res.width,res.height,3,res.data);
     printf("x=%d\n",x);
 
     return 0;

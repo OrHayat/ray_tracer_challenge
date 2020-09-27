@@ -61,10 +61,10 @@ struct Scene {
             glm::vec4 ka=collision_comp.collided_shape.mat.ka;
             glm::vec4 kd=collision_comp.collided_shape.mat.kd;
             glm::vec4 ks=collision_comp.collided_shape.mat.ks;
-            std::cout<<"ka="<<glm::to_string(ka)<<std::endl;
-            std::cout<<"kd="<<glm::to_string(kd)<<std::endl;
-            std::cout<<"ks="<<glm::to_string(ks)<<std::endl;
-           std::cout<<"I_ambient of scene="<<glm::to_string(this->I_ambient)<<std::endl;
+//            std::cout<<"ka="<<glm::to_string(ka)<<std::endl;
+//            std::cout<<"kd="<<glm::to_string(kd)<<std::endl;
+//            std::cout<<"ks="<<glm::to_string(ks)<<std::endl;
+//           std::cout<<"I_ambient of scene="<<glm::to_string(this->I_ambient)<<std::endl;
 
 
 //            glm::vec3 intersection_point=collision_compray_from_eye(collision_comp.t);
