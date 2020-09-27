@@ -43,7 +43,7 @@ collision_computation::collision_computation(float t,
 {
 }
 
-collision_computation collision_computation::prepare_collision(const ray& ray_from_eye,const float t,shape& collided_shape)
+collision_computation collision_computation::prepare_collision_computation(const ray& ray_from_eye,const float t,shape& collided_shape)
 {
     glm::vec3 intersection_point=ray_from_eye(t);
     glm::vec3 dir_from_intersection_to_eye=-ray_from_eye.dir;

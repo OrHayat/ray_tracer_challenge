@@ -4,6 +4,8 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 #define GLM_FORCE_SWIZZLE
 #define GLM_FORCE_CTOR_INIT
+#define  GLM_ENABLE_EXPERIMENTAL
+
 
 #include <rtc/core/ray.hpp>
 #include <rtc/core/collision_data.hpp>
@@ -12,9 +14,9 @@
 #include <rtc/Scene.hpp>
 #include <doctest/doctest.h>
 
-#define  GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 
 int main(int argc, char** argv) {
@@ -168,6 +170,7 @@ Scene default_scene()
     s2->set_model(glm::scale(glm::mat4(),glm::vec3(0.5f)));
     res.objects.push_back(s);
     res.objects.push_back(s2);
+    res.I_ambient=glm::vec4(1.0f);
     return  res;
 }
 
@@ -286,39 +289,6 @@ TEST_SUITE("scene") {
         }
     }
 
-    SCENARIO("Shading an intersection")
-    {
-        GIVEN("w ← default_world()")
-        {
-            Scene s=default_scene();
-            AND_WHEN(" r ← ray(point(0, 0, -5), vector(0, 0, 1))")
-            {
-                ray r(glm::vec3(0,0,-5),glm::vec3(0,0,1));
-
-            AND_WHEN("shape ← the first object in w")
-                {
-                shape* shape=s.objects.at(0);
-                AND_WHEN(" i ← intersection(r, shape)")
-                    {
-                    collision_data i=shape->collide(r);
-                    WHEN("comps ← prepare_computations(i, r)")
-                        {
-                        std::optional<collision_computation> comps=collision_computation::prepare_collision(r,i);
-                        if(!comps)
-                            {
-                                FAIL("should suceed finding the collision data");
-                            }
-                        s.render_block()
-                                    FAIL("not done yet");//TODO
-//    And c ← shade_hit(w, comps)
-//    Then c = color(0.38066, 0.47583, 0.2855)
-
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 
@@ -816,7 +786,7 @@ TEST_SUITE("ray")
         }
     }
 }
-#if 0
+
 TEST_SUITE("camera") {
     SCENARIO ("The pixel size for horrizontal canvas") {
                 GIVEN("c= camera(200,125,math.pi/2)") {
@@ -841,7 +811,7 @@ TEST_SUITE("camera") {
                 GIVEN ("c ← camera(201, 101, π/2)") {
             Camera c(201, 101, glm::pi<float>() / 2.0f);
                     WHEN("r ← ray_for_pixel(c, 100, 50)") {
-                ray r = c.RayForPixel(100, 50);
+                ray r = c.RayForPixel(100+0.5f, 50+0.5f);
                         THEN("r.origin = point(0, 0, 0)") {
                             REQUIRE_EQ(r.origin.x, doctest::Approx(0));
                             REQUIRE_EQ(r.origin.y, doctest::Approx(0));
@@ -861,17 +831,17 @@ TEST_SUITE("camera") {
     GIVEN(" c ← camera(201, 101, π/2)")
     {
         Camera c(201, 101, glm::pi<float>() / 2.0f);
-        WHEN("r ← ray_for_pixel(c, 0, 0)") {
-            ray r=c.RayForPixel(0,0);
+        WHEN("r ← RayForPixel_mid_pixel(c, 0, 0)") {
+            ray r=c.RayForPixel(0+0.5f,0+0.5f);
             THEN("r.origin == point(0, 0, 0)") {
                 REQUIRE_EQ(r.origin.x, doctest::Approx(0));
                 REQUIRE_EQ(r.origin.y, doctest::Approx(0));
                 REQUIRE_EQ(r.origin.z, doctest::Approx(0));
                 AND_THEN("r.direction == vector(0.66519, 0.33259, -0.66851))")
                     {
-                        REQUIRE_EQ(r.dir.x, doctest::Approx(0.66519));
-                        REQUIRE_EQ(r.dir.y, doctest::Approx(0.33259));
-                        REQUIRE_EQ(r.dir.z, doctest::Approx(-0.66851));
+                        REQUIRE_EQ(r.dir.x, doctest::Approx(0.66519f));
+                        REQUIRE_EQ(r.dir.y, doctest::Approx(0.33259f));
+                        REQUIRE_EQ(r.dir.z, doctest::Approx(-0.66851f));
                     }
                 }
             }
@@ -883,10 +853,11 @@ TEST_SUITE("camera") {
                 GIVEN("c ← camera(201, 101, π/2)") {
                 Camera c(201, 101, glm::pi<float>() / 2.0f);
             WHEN("c.transform ← rotation_y(π/4) * translation(0, -2, 5)") {
-                c.camera_to_world_view=glm::rotate(glm::translate(glm::mat4(),glm::vec3(0,-2.0f,5.0f))
-                        ,glm::pi<float>()/4.0f,glm::vec3(0,1,0));
+//                glm::mat4 rot=
+            c.set_transform(glm::rotate(glm::mat4(1.0f),glm::pi<float>()/4.0f,glm::vec3(0,1,0))*glm::translate(glm::mat4(),glm::vec3(0,-2,5)));
                         AND_WHEN("r ← ray_for_pixel(c, 100, 50)") {
-                            ray r=c.RayForPixel(100.0f,50.0f);
+                            ray r=c.RayForPixel(100.0f+0.5f,50.0f+0.5f);
+                            std::cout<<"ray is "<<r.origin<<",\nr.dir="<<r.dir<<std::endl;
                             THEN ("r.origin = point(0, 2, -5)") {
                                 REQUIRE_EQ(r.origin.x,doctest::Approx(0.0f));
                                 REQUIRE_EQ(r.origin.y,doctest::Approx(2.0f));
@@ -902,5 +873,5 @@ TEST_SUITE("camera") {
             }
         }
     }
+
 }
-#endif

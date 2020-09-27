@@ -11,7 +11,12 @@ struct Camera {
     unsigned int image_width;
     unsigned int image_height;
     float fov;
-    glm::mat4 camera_to_world_view=glm::mat4();
+    void set_transform(const glm::mat4& transform){
+        this->camera_to_world_view=transform;
+        this->world_to_camera_view=glm::inverse(transform);
+    }
+    glm::mat4 camera_to_world_view;
+    glm::mat4 world_to_camera_view;
     float half_width;
     float half_height;
     float pixel_size;

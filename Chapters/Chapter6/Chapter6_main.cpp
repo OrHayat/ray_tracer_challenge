@@ -19,7 +19,7 @@ int main(int argc, char** argv)
 {
     Scene s;
     Camera cam(650,400,glm::pi<float>()/2);
-    cam.camera_to_world_view=glm::scale(glm::translate(glm::mat4(),glm::vec3(0,0,4)),glm::vec3(-1,-1,1));
+    cam.camera_to_world_view=glm::scale(glm::translate(glm::mat4(1.0f),glm::vec3(0,0,4)),glm::vec3(-1,-1,1));
     s.I_ambient=glm::vec4(0.6f,0.4f,0.5f,1.0f);
     s.selected_camera=0;
     s.cameras.push_back(cam);
@@ -30,7 +30,7 @@ int main(int argc, char** argv)
     mat_.ks=glm::vec4(0,0.5,1,1);
     mat_.shininess=250.0f;
     sphere_->mat=mat_;
-    sphere_->set_model(glm::mat4());
+    sphere_->set_model(glm::mat4(1.0f));
 //    sphere_->set_model((glm::translate(glm::mat4(),glm::vec3(0,0,0))*glm::scale(glm::mat4(),glm::vec3(1,1,1))));
 //    sphere_->model=(glm::translate(glm::mat4(),glm::vec3(2,0,0))*glm::scale(glm::mat4(),glm::vec3(3,3,3)));
 //    sphere_->model_inv=glm::inverse(sphere_->model);

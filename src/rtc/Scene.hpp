@@ -61,6 +61,12 @@ struct Scene {
             glm::vec4 ka=collision_comp.collided_shape.mat.ka;
             glm::vec4 kd=collision_comp.collided_shape.mat.kd;
             glm::vec4 ks=collision_comp.collided_shape.mat.ks;
+            std::cout<<"ka="<<glm::to_string(ka)<<std::endl;
+            std::cout<<"kd="<<glm::to_string(kd)<<std::endl;
+            std::cout<<"ks="<<glm::to_string(ks)<<std::endl;
+           std::cout<<"I_ambient of scene="<<glm::to_string(this->I_ambient)<<std::endl;
+
+
 //            glm::vec3 intersection_point=collision_compray_from_eye(collision_comp.t);
 //            glm::vec3 normal=glm::normalize(collided.value().colided_shape.get_normal_at_point(collision_comp.intersection_point));
 //            if(glm::dot(normal,-ray_from_eye.dir)<0)
@@ -164,8 +170,8 @@ struct Scene {
                 }
             }
         }
-        if(collided.has_value()) {
-            collision_computation comp = collision_computation::prepare_collision(ray_from_eye,
+        if(min_t>0) {
+            collision_computation comp = collision_computation::prepare_collision_computation(ray_from_eye,
                                                                                   min_t,
                                                                                   collided.value().colided_shape);
             return this->shade_hit(comp);
