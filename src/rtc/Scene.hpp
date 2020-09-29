@@ -7,13 +7,13 @@
 #define GLM_FORCE_SWIZZLE
 #define GLM_FORCE_CTOR_INIT
 
-#include <rtc/core/shape.hpp>
+#include <rtc/shapes/shape.hpp>
 #include <vector>
 #include <iostream>
 #include <rtc/core/lighting/light.hpp>
 #include <rtc/Camera.hpp>
 #include <rtc/Canvas.hpp>
-#include <glm/gtx/string_cast.hpp>
+#include <rtc/core/setup_glm.hpp>
 //#include <rtc/core/ray.hpp>
 #include "algorithm"
 

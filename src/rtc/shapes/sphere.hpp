@@ -4,7 +4,7 @@
 
 #ifndef RAY_TRACER_SPHERE_HPP
 #define RAY_TRACER_SPHERE_HPP
-#include <rtc/core/shape.hpp>
+#include <rtc/shapes/shape.hpp>
 #include <rtc/core/ray.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
@@ -18,6 +18,7 @@ struct sphere:shape{
     glm::vec3 get_normal_at_point(glm::vec3 point)const override
     {
         glm::vec4 objectPoint = this->model_inv*glm::vec4(point,1);
+
         glm::vec4 object_normal=glm::vec4(objectPoint.xyz()-center,0);
         glm::vec3 worldnormal=(glm::transpose(this->model_inv)*object_normal).xyz;
         return glm::normalize(worldnormal);

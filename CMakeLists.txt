@@ -35,7 +35,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/cmake)
 ### Adding libIGL: choose the path to your local copy libIGL
 include(RTC)
 
-add_executable(${PROJECT_NAME} src/rtc/main.cpp src/rtc/core/material.h)
+add_executable(${PROJECT_NAME} src/rtc/main.cpp)
 target_link_libraries(${PROJECT_NAME} rtc::core doctest::doctest)
 
 message("dasodasdasplkdsk=,RTC_BUILD_CHAPTERS= ${RTC_BUILD_CHAPTERS}")

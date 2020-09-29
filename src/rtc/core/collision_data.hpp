@@ -21,7 +21,6 @@ struct collision_data
     collision_data(const collision_data& other);
     collision_data& operator= (const collision_data& other);
     std::optional<float>find_collision_value()const;
-
 };
 
 struct  collision_computation

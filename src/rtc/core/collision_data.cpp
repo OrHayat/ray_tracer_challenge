@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include "collision_data.hpp"
-#include "shape.hpp"
+#include <rtc/shapes/shape.hpp>
 collision_data::collision_data( shape& colided_shape):t(std::vector<float>()),colided_shape(colided_shape){}
 collision_data::collision_data(std::vector<float>t, shape& colided_shape):t(t),colided_shape(colided_shape){}
 collision_data::collision_data(const collision_data& other):colided_shape(other.colided_shape),t(other.t){}

@@ -34,9 +34,5 @@ ray Camera::RayForPixel( float x, float y) const
     glm::vec4 const origin = world_to_camera_view * glm::vec4(0.f, 0.f, 0.f,1.0f);
     glm::vec4 direction=pixel-origin;
     direction=glm::normalize(direction);
-
-//    if(glm::length(direction)>0.000002f)
-//    {
-//    }
     return ray(origin, direction);
 }

@@ -7,7 +7,7 @@
 #include <rtc/core/collision_data.hpp>
 #include <rtc/core/ray.hpp>
 #include <glm/glm.hpp>
-#include "material.h"
+#include "rtc/core/material.h"
 
 struct shape{
     glm::mat4 model=glm::mat4();

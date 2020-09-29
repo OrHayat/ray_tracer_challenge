@@ -14,7 +14,7 @@
 #include <rtc/Camera.hpp>
 #include <stb_image_write.h>
 #include <glm/gtc/matrix_transform.hpp>
-#include <rtc/core/sphere.hpp>
+#include <rtc/shapes/sphere.hpp>
 int main(int argc, char** argv)
 {
     Scene s;

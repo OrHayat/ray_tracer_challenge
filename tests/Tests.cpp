@@ -9,7 +9,7 @@
 
 #include <rtc/core/ray.hpp>
 #include <rtc/core/collision_data.hpp>
-#include <rtc/core/sphere.hpp>
+#include <rtc/shapes/sphere.hpp>
 #include <rtc/Camera.hpp>
 #include <rtc/Scene.hpp>
 #include <doctest/doctest.h>
