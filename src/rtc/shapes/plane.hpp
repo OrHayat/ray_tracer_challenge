@@ -47,7 +47,7 @@ struct plane:shape{
         r.dir=new_dir;
         collision_data res(*this);
         float denom=glm::dot(this->normal,glm::normalize(r.dir));
-        if(denom<1e-7)
+        if(glm::abs(denom)<1e-7)
         {
             return res;
         }

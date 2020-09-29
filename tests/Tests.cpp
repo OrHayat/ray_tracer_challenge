@@ -10,6 +10,8 @@
 #include <rtc/core/ray.hpp>
 #include <rtc/core/collision_data.hpp>
 #include <rtc/shapes/sphere.hpp>
+#include <rtc/shapes/plane.hpp>
+#include <rtc/shapes/disk.hpp>
 #include <rtc/Camera.hpp>
 #include <rtc/Scene.hpp>
 #include <doctest/doctest.h>
@@ -172,6 +174,43 @@ Scene default_scene()
     res.objects.push_back(s2);
     res.I_ambient=glm::vec4(1.0f);
     return  res;
+}
+
+TEST_SUITE("plane") {
+    SCENARIO ("ray plane intersection") {
+        plane* p=new plane(glm::vec3(0.0f),glm::vec3(0,1,0));
+        ray r=ray(glm::vec3(5,2,0),glm::vec3(0,-1,0));
+        collision_data d= p->collide(r);
+        REQUIRE_EQ(1,d.t.size());
+        std::optional<float> t=d.find_collision_value();
+        if(!t)
+        {
+            FAIL("SHOULD HAVE COLLIDED with plane");
+        } else
+        {
+            REQUIRE_EQ(t.value(),doctest::Approx(2.0f));
+        }
+    }
+    SCENARIO ("ray plane intersection when plane is behind ray") {
+        plane* p=new plane(glm::vec3(0),glm::vec3(0,1,0));
+        ray r=ray(glm::vec3(0,2,0),glm::vec3(0,1,0));
+        collision_data d= p->collide(r);
+                REQUIRE_EQ(1,d.t.size());
+                REQUIRE_EQ(d.t.at(0),doctest::Approx(-2.0f));
+
+        std::optional<float> t=d.find_collision_value();
+        if(t)
+        {
+                    FAIL("SHOULD HAVE not COLLIDED with plane AFTER filtering bad collision");
+        }
+    }
+
+    SCENARIO ("ray plane intersection when plane is parllel to ray") {
+        plane* p=new plane(glm::vec3(0),glm::vec3(0,1,0));
+        ray r=ray(glm::vec3(0,2,0),glm::vec3(1,0,0));
+        collision_data d= p->collide(r);
+                REQUIRE_EQ(0,d.t.size());
+    }
 }
 
 TEST_SUITE("scene") {
@@ -472,7 +511,6 @@ TEST_SUITE("sphere") {
                         s.set_model(m);
                         WHEN("When n ← normal_at(s, point(0, √2/2, -√2/2))")
                         {
-                            std::cout<<"starting test"<<std::endl;
                             glm::vec3 n=s.get_normal_at_point(glm::vec3(0,glm::sqrt(2.0f)/2.0f,-glm::sqrt(2.0f)/2.0f));
 
                             THEN("n = vector(0, 0.97014, -0.24254)")
@@ -627,7 +665,6 @@ TEST_SUITE("ray")
                     {
                         REQUIRE_EQ(r.dir,direction);
                     }
-//                    std::cout<<glm::to_string(direction)<<std::endl;
                 }
             }
         }
@@ -743,7 +780,6 @@ TEST_SUITE("ray")
                 sphere s;
                     WHEN("xs ← intersect(s, r)")
                 {
-                    std::cout<<"test starting"<<std::endl;
                     collision_data xs=s.collide(r);
                     THEN("xs.count ==2")
                     {
@@ -857,7 +893,6 @@ TEST_SUITE("camera") {
             c.set_transform(glm::rotate(glm::mat4(1.0f),glm::pi<float>()/4.0f,glm::vec3(0,1,0))*glm::translate(glm::mat4(),glm::vec3(0,-2,5)));
                         AND_WHEN("r ← ray_for_pixel(c, 100, 50)") {
                             ray r=c.RayForPixel(100.0f+0.5f,50.0f+0.5f);
-                            std::cout<<"ray is "<<r.origin<<",\nr.dir="<<r.dir<<std::endl;
                             THEN ("r.origin = point(0, 2, -5)") {
                                 REQUIRE_EQ(r.origin.x,doctest::Approx(0.0f));
                                 REQUIRE_EQ(r.origin.y,doctest::Approx(2.0f));

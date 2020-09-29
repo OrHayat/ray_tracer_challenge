@@ -14,7 +14,9 @@
 #include <rtc/Camera.hpp>
 #include <stb_image_write.h>
 #include <glm/gtc/matrix_transform.hpp>
-#include <rtc/shapes//sphere.hpp>
+#include <rtc/shapes/sphere.hpp>
+#include <rtc/shapes/plane.hpp>
+#include <rtc/shapes/disk.hpp>
 int main(int argc, char** argv)
 {
     Scene s;
@@ -24,17 +26,30 @@ int main(int argc, char** argv)
     s.selected_camera=0;
     s.cameras.push_back(cam);
     sphere* sphere_= new sphere(1);
+    sphere* sphere_2= new sphere(2);
+
+//    disk* disk_=new plane(glm::vec3(0),glm::vec3(0,1,0));
+    plane* disk_=new plane(glm::vec3(0),glm::vec3(0,1,0));
+
     material mat_;
     mat_.ka=glm::vec4(0.85f,0.35f,0.2f,1.0f);
     mat_.kd=glm::vec4(0.65f,0.85f,0.5f,1.0f);
     mat_.ks=glm::vec4(0,0.5,1,1);
     mat_.shininess=250.0f;
     sphere_->mat=mat_;
+    disk_->mat=mat_;
+    disk_->mat.ka=glm::vec4(0.5f,0,1.0f,1.0f);
+    disk_->mat.kd=glm::vec4(1.0f);
+    disk_->mat.ks=glm::vec4(1,0.5,0.2,1);
+    disk_->set_model(glm::mat4(1.0f));
     sphere_->set_model(glm::mat4(1.0f));
+    sphere_2->set_model(glm::translate(glm::mat4(),glm::vec3(1,1,3)));
 //    sphere_->set_model((glm::translate(glm::mat4(),glm::vec3(0,0,0))*glm::scale(glm::mat4(),glm::vec3(1,1,1))));
 //    sphere_->model=(glm::translate(glm::mat4(),glm::vec3(2,0,0))*glm::scale(glm::mat4(),glm::vec3(3,3,3)));
 //    sphere_->model_inv=glm::inverse(sphere_->model);
-    s.objects.push_back(sphere_);
+//    s.objects.push_back(sphere_);
+//    s.objects.push_back(sphere_2);
+    s.objects.push_back(disk_);
     glm::vec3 light1_pos=glm::vec3(0,5.0f,4.0f);;
     light* point_light1=light::make_point_light_ptr(light1_pos);
     point_light1->kc=1.2f;
@@ -53,7 +68,7 @@ int main(int argc, char** argv)
         res.data[i]=can.data[i];
     }
 //    res.draw_circle(glm::ivec2(450,350),30,glm::u8vec3(0,255,0),6);
-    int x=stbi_write_bmp("./chapter6.bmp",res.width,res.height,3,res.data);
+    int x=stbi_write_bmp("./chapter7.bmp",res.width,res.height,3,res.data);
     printf("x=%d\n",x);
 
     return 0;
