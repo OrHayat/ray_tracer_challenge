@@ -61,15 +61,17 @@ struct cube:shape{
         float tmin = fmax(fmax(fmin(t1, t2), fmin(t3, t4)), fmin(t5, t6));
         float tmax = fmin(fmin(fmax(t1, t2), fmax(t3, t4)), fmax(t5, t6));
         collision_data res(*this);
-
 // if tmax < 0, ray (line) is intersecting AABB, but the whole AABB is behind us
         if (tmax < 0 || tmin > tmax) {
             return res;
         }
-        if (tmin < 0) {
-            res.t.push_back(tmax);
+        if(tmin<0.0001f)
+        {
+         res.t.push_back(tmax);
             return res;
-        } else {
+        }
+        else
+        {
             res.t.push_back(tmin);
             return res;
         }

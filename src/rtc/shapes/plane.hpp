@@ -38,6 +38,7 @@ struct plane:shape{
         glm::vec3 worldnormal=(glm::transpose(this->model_inv)*object_normal).xyz;
         return glm::normalize(worldnormal);
     }
+    //https://stackoverflow.com/questions/23975555/how-to-do-ray-plane-intersection
     collision_data collide(ray r) override// collision_data collide(ray r)
     {
 //        glm::mat4 model_inv=glm::inverse(this->model);
@@ -46,15 +47,15 @@ struct plane:shape{
         r.pos=new_pos;
         r.dir=new_dir;
         collision_data res(*this);
-        float denom=glm::dot(this->normal,glm::normalize(r.dir));
+        float denom=glm::dot(glm::normalize(this->normal),glm::normalize(r.dir));
         if(glm::abs(denom)<1e-7)
         {
             return res;
         }
-        //float nomenitor= p0.x*plane.x+p0.y*plane.y+p0.z*plane.z+plane.w;//=glm::dot(plane->params,vec4(r.pos,1))
-        //res.t.push_back(nom/denom);
+        float nomenitor=r.origin.x*this->params.x+r.origin.y*this->params.y+r.origin.z*this->params.z+this->params.w;  //p0.x*plane.x+p0.y*plane.y+p0.z*plane.z+plane.w;//=glm::dot(plane->params,vec4(r.pos,1))
+        res.t.push_back(-nomenitor/denom);
         //https://stackoverflow.com/questions/23975555/how-to-do-ray-plane-intersection
-        res.t.push_back(glm::dot(this->normal,this->origin-r.pos)/denom);
+//        res.t.push_back(glm::dot(this->normal,this->origin-r.pos)/denom);
         return res;
     }
 };

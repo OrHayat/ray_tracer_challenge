@@ -86,7 +86,6 @@ struct Scene {
                     dir_to_lightsource=(cur_light->pos - collision_comp.intersection_point);
 //                    std::cout<<"cur lightsource pos is:"<<glm::to_string(cur_light->pos)<<",,,, and intersection point is: "<<glm::to_string(intersection_point)<<std::endl;
                 }
-
                 if(cur_light->type==light_type::spot_light)
                 {
 
@@ -160,7 +159,7 @@ struct Scene {
             collision_data res=objects.at(i)->collide(ray_from_eye);
             std::optional<float> colision_time=res.find_collision_value();
             float cur_collision_time=colision_time.value_or(-1.0f);
-            if(cur_collision_time>=0)
+            if(cur_collision_time>0)
             {
                 if((min_t<0)||(cur_collision_time<=min_t))
                 {
@@ -169,7 +168,7 @@ struct Scene {
                 }
             }
         }
-        if(min_t>0) {
+        if(min_t>0.0005f) {
             collision_computation comp = collision_computation::prepare_collision_computation(ray_from_eye,
                                                                                   min_t,
                                                                                   collided.value().colided_shape);

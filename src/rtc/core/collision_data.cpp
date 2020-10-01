@@ -13,12 +13,12 @@ std::optional<float> collision_data::find_collision_value()const
 {
     for(int i=0;i<this->t.size();i++)
     {
-        if(this->t.at(i)>=0)
+        if(this->t.at(i)>=0.0005f)
         {
             return std::make_optional(this->t.at(i));
         }
     }
-    return std::optional<float>();
+    return {};//std::optional<float>();
 }
 collision_data& collision_data::operator= (const  collision_data& other){
     if(this!=&other)

@@ -33,7 +33,7 @@ int main(int argc, char** argv)
 
 //    disk* disk_=new plane(glm::vec3(0),glm::vec3(0,1,0));
     plane* disk_=new plane(glm::vec3(-5.0f,-5.0f,-3.0f),glm::vec3(0,1.0f,0));//,2);
-    cube* c=new cube(glm::vec3(0,1,0),glm::vec3(2));
+    cube* c=new cube(glm::vec3(0,0,0),glm::vec3(0.2f));
     material mat_;
     mat_.ka=glm::vec4(0.85f,0.35f,0.2f,1.0f);
     mat_.kd=glm::vec4(0.65f,0.85f,0.5f,1.0f);
