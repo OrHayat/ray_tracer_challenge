@@ -96,7 +96,7 @@ struct Scene {
                         continue;
                     }
                 }
-                ray shadow_ray(collision_comp.intersection_point+collision_comp.intersection_point_normal*0.05f,dir_to_lightsource);
+                ray shadow_ray(collision_comp.intersection_point+collision_comp.intersection_point_normal*0.005f,dir_to_lightsource);
                 bool shadow=false;
                 for(unsigned obj_id=0;obj_id<objects.size();++obj_id)
                 {
@@ -105,7 +105,7 @@ struct Scene {
 //                   if(col_val.has_value())
                     if(col_val.has_value())
                     {
-                        if(col_val.value()>0&&(cur_light->type==light_type::directed_light||col_val.value()<=1.0f))
+                        if(col_val.value()>0.04f&&(cur_light->type==light_type::directed_light||col_val.value()<=1.0f))
                         {
                             shadow=true;
                             break;
@@ -113,7 +113,6 @@ struct Scene {
                     }
                 }
                 if(!shadow) {
-//                    std::cout<<"no shadowwwwwwwwwwwwwwwwwwwww light id="<<i<<std::endl;
                     dir_to_lightsource=glm::normalize(dir_to_lightsource);
 
                     glm::vec3 intensity;

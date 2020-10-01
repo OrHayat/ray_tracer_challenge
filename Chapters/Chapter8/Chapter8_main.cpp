@@ -23,7 +23,7 @@ int main(int argc, char** argv)
 {
     Scene s;
     Camera cam(650,400,glm::pi<float>()/2);
-    cam.set_transform(glm::lookAt(glm::vec3(0,4,2),glm::vec3(0),glm::vec3(0,1,0)));
+    cam.set_transform(glm::lookAt(glm::vec3(1,4,4),glm::vec3(0),glm::vec3(0,1,0)));
     //cam.set_transform(glm::scale(glm::translate(glm::mat4(),glm::vec3(0,0,-4)),glm::vec3(-1,-1,1)));
     s.I_ambient=glm::vec4(0.6f,0.4f,0.5f,1.0f);
     s.selected_camera=0;
@@ -32,8 +32,8 @@ int main(int argc, char** argv)
     sphere* sphere_2= new sphere(2);
 
 //    disk* disk_=new plane(glm::vec3(0),glm::vec3(0,1,0));
-    disk* disk_=new disk(glm::vec3(-5.0f,-5.0f,-3.0f),glm::vec3(0,1.0f,0),2);
-    cube* c=new cube(glm::vec3(0),glm::vec3(1));
+    plane* disk_=new plane(glm::vec3(-5.0f,-5.0f,-3.0f),glm::vec3(0,1.0f,0));//,2);
+    cube* c=new cube(glm::vec3(0,1,0),glm::vec3(2));
     material mat_;
     mat_.ka=glm::vec4(0.85f,0.35f,0.2f,1.0f);
     mat_.kd=glm::vec4(0.65f,0.85f,0.5f,1.0f);
