@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="Chapter2"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="msvc8"/>
+		<Option virtualFolders="CMake Files\;CMake Files\Chapters\;CMake Files\Chapters\Chapter1\;CMake Files\Chapters\Chapter2\;CMake Files\Chapters\Chapter4\;CMake Files\Chapters\Chapter5\;CMake Files\Chapters\Chapter6\;CMake Files\Chapters\Chapter7\;CMake Files\Chapters\Chapter8\;CMake Files\external\;CMake Files\external\doctest\;CMake Files\external\doctest\scripts\;CMake Files\external\doctest\scripts\cmake\;CMake Files\cmake\;CMake Files\tests\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="D:/Program Files/ray_tracer_cpp/cmake-build-release/Chapters/Chapter2"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f &quot;D:\Program Files\ray_tracer_cpp\cmake-build-release\Chapters\Chapter2\Makefile&quot; VERBOSE=1 all"/>
+					<CompileFile command="nmake /NOLOGO /f &quot;D:\Program Files\ray_tracer_cpp\cmake-build-release\Chapters\Chapter2\Makefile&quot; VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f &quot;D:\Program Files\ray_tracer_cpp\cmake-build-release\Chapters\Chapter2\Makefile&quot; VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f &quot;D:\Program Files\ray_tracer_cpp\cmake-build-release\Chapters\Chapter2\Makefile&quot; VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Chapter2">
+				<Option output="D:/Program Files/ray_tracer_cpp/cmake-build-release/Chapter2.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/Program Files/ray_tracer_cpp/cmake-build-release"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="msvc8"/>
+				<Compiler>
+					<Add option="-DIGL_STATIC_LIBRARY"/>
+					<Add option="-DNOMINMAX"/>
+					<Add option="-DTUTORIAL_SHARED_PATH=&quot;D:/Program Files/ray_tracer_cpp/cmake/../external/../tutorial/data&quot;"/>
+					<Add directory="D:/Program Files/ray_tracer_cpp/Chapters"/>
+					<Add directory="D:/Program Files/ray_tracer_cpp/cmake/../src"/>
+					<Add directory="D:/Program Files/ray_tracer_cpp/cmake/../external/eigen"/>
+					<Add directory="D:/Program Files/ray_tracer_cpp/cmake/../external/glm"/>
+					<Add directory="D:/Program Files/ray_tracer_cpp/cmake/../external/stb"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\ATLMFC\include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\ucrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\shared"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\winrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\cppwinrt"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f &quot;D:\Program Files\ray_tracer_cpp\cmake-build-release\Chapters\Chapter2\Makefile&quot; VERBOSE=1 Chapter2"/>
+					<CompileFile command="nmake /NOLOGO /f &quot;D:\Program Files\ray_tracer_cpp\cmake-build-release\Chapters\Chapter2\Makefile&quot; VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f &quot;D:\Program Files\ray_tracer_cpp\cmake-build-release\Chapters\Chapter2\Makefile&quot; VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f &quot;D:\Program Files\ray_tracer_cpp\cmake-build-release\Chapters\Chapter2\Makefile&quot; VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="Chapter2/fast">
+				<Option output="D:/Program Files/ray_tracer_cpp/cmake-build-release/Chapter2.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="D:/Program Files/ray_tracer_cpp/cmake-build-release"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="msvc8"/>
+				<Compiler>
+					<Add option="-DIGL_STATIC_LIBRARY"/>
+					<Add option="-DNOMINMAX"/>
+					<Add option="-DTUTORIAL_SHARED_PATH=&quot;D:/Program Files/ray_tracer_cpp/cmake/../external/../tutorial/data&quot;"/>
+					<Add directory="D:/Program Files/ray_tracer_cpp/Chapters"/>
+					<Add directory="D:/Program Files/ray_tracer_cpp/cmake/../src"/>
+					<Add directory="D:/Program Files/ray_tracer_cpp/cmake/../external/eigen"/>
+					<Add directory="D:/Program Files/ray_tracer_cpp/cmake/../external/glm"/>
+					<Add directory="D:/Program Files/ray_tracer_cpp/cmake/../external/stb"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\ATLMFC\include"/>
+					<Add directory="C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.27.29110\include"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\NETFXSDK\4.8\include\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\ucrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\shared"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\um"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\winrt"/>
+					<Add directory="C:\Program Files (x86)\Windows Kits\10\include\10.0.18362.0\cppwinrt"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="nmake /NOLOGO /f &quot;D:\Program Files\ray_tracer_cpp\cmake-build-release\Chapters\Chapter2\Makefile&quot; VERBOSE=1 Chapter2/fast"/>
+					<CompileFile command="nmake /NOLOGO /f &quot;D:\Program Files\ray_tracer_cpp\cmake-build-release\Chapters\Chapter2\Makefile&quot; VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="nmake /NOLOGO /f &quot;D:\Program Files\ray_tracer_cpp\cmake-build-release\Chapters\Chapter2\Makefile&quot; VERBOSE=1 clean"/>
+					<DistClean command="nmake /NOLOGO /f &quot;D:\Program Files\ray_tracer_cpp\cmake-build-release\Chapters\Chapter2\Makefile&quot; VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/Chapters/Chapter2/Chapter2_main.cpp">
+			<Option target="Chapter2"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/Chapters/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\Chapters\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/Chapters/Chapter1/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\Chapters\Chapter1\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/Chapters/Chapter2/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\Chapters\Chapter2\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/Chapters/Chapter4/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\Chapters\Chapter4\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/Chapters/Chapter5/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\Chapters\Chapter5\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/Chapters/Chapter6/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\Chapters\Chapter6\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/Chapters/Chapter7/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\Chapters\Chapter7\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/Chapters/Chapter8/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\Chapters\Chapter8\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/external/doctest/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\external\doctest\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/external/doctest/scripts/cmake/Config.cmake.in">
+			<Option virtualFolder="CMake Files\external\doctest\scripts\cmake\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/cmake/CXXFeatures.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/cmake/DownloadProject.CMakeLists.cmake.in">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/cmake/DownloadProject.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/cmake/RTC.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/cmake/RTCDownloadExternal.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/cmake/RTCFolders.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/cmake/RTCWindows.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/tests/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\tests\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

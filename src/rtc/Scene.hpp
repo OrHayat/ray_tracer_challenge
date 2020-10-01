@@ -96,7 +96,7 @@ struct Scene {
                         continue;
                     }
                 }
-                ray shadow_ray(collision_comp.intersection_point+collision_comp.intersection_point_normal*0.005f,dir_to_lightsource);
+                ray shadow_ray(collision_comp.intersection_point+collision_comp.intersection_point_normal*0.05f,dir_to_lightsource);
                 bool shadow=false;
                 for(unsigned obj_id=0;obj_id<objects.size();++obj_id)
                 {
@@ -191,11 +191,12 @@ struct Scene {
             {
 //                std::cout<<"x="<<x<<" ,y= "<<y<<std::endl;
                 glm::vec3 tmp=glm::vec3(0);
-                for (unsigned int s = 0; s <4 ; ++s)
-                {
-                   tmp+=render_block(x+(float)s/2.0f,y+((float)(s%2)/2.0f),1,1,0);
-                }
-                tmp/=4;
+//                for (unsigned int s = 0; s <4 ; ++s)
+//                {
+//                   tmp+=render_block(x+(float)s/2.0f,y+((float)(s%2)/2.0f),1,1,0);
+//                }
+//                tmp/=4;
+                   tmp+=render_block(x+(float)0.5f,y+0.5f,1,1,0);
 //                if(tmp.x!=0||tmp.y!=0||tmp.z!=0) {
 //                    nonzeros_pixels++;
 //                    tmp=glm::clamp(tmp*255.0f,glm::vec3(0.0f),glm::vec3(255.0f));
