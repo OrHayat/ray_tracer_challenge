@@ -15,7 +15,7 @@ struct ray;
 struct collision_data
 {
     std::vector<float> t;
-    shape& colided_shape;
+    shape* colided_shape= nullptr;
     collision_data(shape& colided_shape);//t(std::vector<float>()){}//positions(std::vector<glm::vec3>()){}
     collision_data(std::vector<float>t, shape& colided_shape);
     collision_data(const collision_data& other);

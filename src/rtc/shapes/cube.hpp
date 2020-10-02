@@ -17,7 +17,9 @@ struct cube:shape{
         glm::vec3 point_max;
     };
 //    cube():center(glm::vec3(0)),radius(1.0f){}
-    explicit cube(glm::vec3 min,glm::vec3 max):point_min(min),point_max(max){}
+    explicit cube(glm::vec3 min,glm::vec3 max):point_min(min),point_max(max){
+        this->type=shape_type::t_cube;
+    }
 //    cube(float radius,const glm::vec3& center):center(center),radius(radius){};
 //http://blog.johnnovak.net/2016/10/22/the-nim-raytracer-project-part-4-calculating-box-normals/?utm_source=mybridge&utm_medium=blog&utm_campaign=read_more
     glm::vec3 get_normal_at_point(glm::vec3 point)const override

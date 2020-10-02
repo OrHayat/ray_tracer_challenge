@@ -38,7 +38,7 @@ struct Scene {
             collision_data d= this->objects.at(i)->collide(r);
             for(unsigned int j=0;j<d.t.size();++j)
             {
-                collision_with_scene_result_data cur_data(d.t[j],&d.colided_shape);
+                collision_with_scene_result_data cur_data(d.t[j],d.colided_shape);
                 res.data.push_back(cur_data);
             }
         }
@@ -57,7 +57,6 @@ struct Scene {
 
     glm::vec3 shade_hit(const collision_computation& collision_comp)
     {
-
             glm::vec4 ka=collision_comp.collided_shape.mat.ka;
             glm::vec4 kd=collision_comp.collided_shape.mat.kd;
             glm::vec4 ks=collision_comp.collided_shape.mat.ks;
@@ -99,7 +98,7 @@ struct Scene {
                 bool shadow=false;
                 for(unsigned obj_id=0;obj_id<objects.size();++obj_id)
                 {
-                    collision_data shadow_ray_collision=objects.at(obj_id)->collide(shadow_ray);
+                    collision_data shadow_ray_collision=this->objects.at(obj_id)->collide(shadow_ray);
                     std::optional<float>col_val= shadow_ray_collision.find_collision_value();
 //                   if(col_val.has_value())
                     if(col_val.has_value())
@@ -151,27 +150,32 @@ struct Scene {
 
     glm::vec3 render_block(float x,float y,int block_size_x,int block_size_y,int depth)
     {
+        if(depth!=0)
+        {
+            std::cout<<"debug block"<<std::endl;
+        }
         ray ray_from_eye = cameras[selected_camera].RayForPixel(x,y);
-        float min_t=-1;
-        std::optional<collision_data> collided;
+        float min_t=-1.0f;
+        collision_data* collided= nullptr;
+        int max_id=-1;
         for(unsigned int i=0;i<objects.size();i++)
         {
             collision_data res=objects.at(i)->collide(ray_from_eye);
-            std::optional<float> colision_time=res.find_collision_value();
-            float cur_collision_time=colision_time.value_or(-1.0f);
+            std::optional<float> collision_time=res.find_collision_value();
+            float cur_collision_time=collision_time.value_or(-10000.0f);
             if(cur_collision_time>0)
             {
                 if((min_t<0)||(cur_collision_time<=min_t))
                 {
+                    max_id=i;
                     min_t=cur_collision_time;
-                    collided=std::make_optional(res);
                 }
             }
         }
         if(min_t>0.0005f) {
             collision_computation comp = collision_computation::prepare_collision_computation(ray_from_eye,
                                                                                   min_t,
-                                                                                  collided.value().colided_shape);
+                                                                                  *this->objects.at(max_id));
             return this->shade_hit(comp);
         }
         return  glm::vec3(0,0,0);
@@ -188,18 +192,19 @@ struct Scene {
             for(uint32_t y=0;y<cameras[selected_camera].image_height;y++)
             {
 //                std::cout<<"x="<<x<<" ,y= "<<y<<std::endl;
-                glm::vec3 tmp=glm::vec3(0);
+                glm::vec3 tmp(0);
 //                for (unsigned int s = 0; s <4 ; ++s)
 //                {
 //                   tmp+=render_block(x+(float)s/2.0f,y+((float)(s%2)/2.0f),1,1,0);
 //                }
 //                tmp/=4;
-                   tmp+=render_block(x+(float)0.5f,y+0.5f,1,1,0);
-//                if(tmp.x!=0||tmp.y!=0||tmp.z!=0) {
-//                    nonzeros_pixels++;
-//                    tmp=glm::clamp(tmp*255.0f,glm::vec3(0.0f),glm::vec3(255.0f));
-//                    std::cout << "vec3(" << tmp.x << "," << tmp.y << "," << tmp.z << ")" << std::endl;
-//                }
+        if(x==330&&y==230)
+        {
+            tmp += render_block(x + (float) 0.5f, y + 0.5f, 1, 1, 1);
+        }
+        else {
+            tmp += render_block(x + (float) 0.5f, y + 0.5f, 1, 1, 0);
+        }
                 res.set_pixel(x,y,glm::clamp(tmp*255.0f,glm::vec3(0.0f),glm::vec3(255.0f)));
             }
         }

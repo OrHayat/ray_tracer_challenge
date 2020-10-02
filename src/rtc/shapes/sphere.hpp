@@ -12,9 +12,17 @@
 struct sphere:shape{
     glm::vec3 center;
     float radius;
-    sphere():center(glm::vec3(0)),radius(1.0f){}
-    explicit sphere(float radius):center(glm::vec3(0)),radius(radius){}//initalzing sphere on center of world
-    sphere(float radius,const glm::vec3& center):center(center),radius(radius){};
+    sphere():center(glm::vec3(0)),radius(1.0f){
+        this->type=shape_type::t_sphere;
+    }
+    explicit sphere(float radius):center(glm::vec3(0)),radius(radius)
+    {
+        this->type=shape_type::t_sphere;
+    }//initalzing sphere on center of world
+    sphere(float radius,const glm::vec3& center):center(center),radius(radius)
+    {
+        this->type=shape_type::t_sphere;
+    };
     glm::vec3 get_normal_at_point(glm::vec3 point)const override
     {
         glm::vec4 objectPoint = this->model_inv*glm::vec4(point,1);
@@ -44,7 +52,6 @@ struct sphere:shape{
         disc=std::sqrt(disc);
         res.t.push_back((-b-disc)/a);
         res.t.push_back((-b+disc)/a);
-//        std::cout<<"found collision t="<<res.t[0]<<","<<res.t[1]<<std::endl;
         return res;
     }
 };

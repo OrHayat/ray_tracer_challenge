@@ -9,7 +9,17 @@
 #include <glm/glm.hpp>
 #include "rtc/core/material.h"
 
+enum shape_type
+{
+    t_unknown,
+    t_plane,
+    t_disk,
+    t_sphere,
+    t_cube
+};
+
 struct shape{
+    shape_type type=t_unknown;
     glm::mat4 model=glm::mat4();
     glm::mat4 model_inv=glm::mat4();
     material mat;

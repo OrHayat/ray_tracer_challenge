@@ -29,7 +29,10 @@ struct disk:shape{
 //            this->origin=glm::vec3(0,0,-params[3]/params[2]);
 //        }
 //    }//initalzing sphere on center of world
-    disk(glm::vec3 origin,glm::vec3 normal,float radius):params(normal,-glm::dot(origin,normal)),origin(origin),normal(glm::normalize(normal)),radius(radius){}
+    disk(glm::vec3 origin,glm::vec3 normal,float radius):params(normal,-glm::dot(origin,normal)),origin(origin),normal(glm::normalize(normal)),radius(radius)
+    {
+        this->type=shape_type::t_disk;
+    }
     glm::vec3 get_normal_at_point(glm::vec3 point)const override
     {
         glm::vec4 objectPoint = this->model_inv*glm::vec4(point,1);
