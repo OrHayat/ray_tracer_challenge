@@ -258,6 +258,12 @@ Chapter8_BINARY_DIR:STATIC=D:/Program Files/ray_tracer_cpp/cmake-build-release/C
 //Value Computed by CMake
 Chapter8_SOURCE_DIR:STATIC=D:/Program Files/ray_tracer_cpp/Chapters/Chapter8
 
+//Value Computed by CMake
+Chapter9_BINARY_DIR:STATIC=D:/Program Files/ray_tracer_cpp/cmake-build-release/Chapters/Chapter9
+
+//Value Computed by CMake
+Chapter9_SOURCE_DIR:STATIC=D:/Program Files/ray_tracer_cpp/Chapters/Chapter9
+
 //Skip the installation process
 DOCTEST_NO_INSTALL:BOOL=OFF
 
@@ -309,8 +315,11 @@ TUTORIALS_CHAPTER6:BOOL=ON
 //Compile chapter 7
 TUTORIALS_CHAPTER7:BOOL=ON
 
-//Compile chapter 7
+//Compile chapter 8
 TUTORIALS_CHAPTER8:BOOL=ON
+
+//Compile chapter 9
+TUTORIALS_CHAPTER9:BOOL=ON
 
 //location of shared tutorial resources
 TUTORIAL_SHARED_PATH:PATH=D:/Program Files/ray_tracer_cpp/cmake/../external/../tutorial/data
@@ -436,7 +445,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_MT
 CMAKE_MT-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=11
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=12
 //Platform information initialized
 CMAKE_PLATFORM_INFO_INITIALIZED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_RC_COMPILER

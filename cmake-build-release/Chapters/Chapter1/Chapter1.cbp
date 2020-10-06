@@ -5,7 +5,7 @@
 		<Option title="Chapter1"/>
 		<Option makefile_is_custom="1"/>
 		<Option compiler="msvc8"/>
-		<Option virtualFolders="CMake Files\;CMake Files\Chapters\;CMake Files\Chapters\Chapter1\;CMake Files\Chapters\Chapter2\;CMake Files\Chapters\Chapter4\;CMake Files\Chapters\Chapter5\;CMake Files\Chapters\Chapter6\;CMake Files\Chapters\Chapter7\;CMake Files\Chapters\Chapter8\;CMake Files\external\;CMake Files\external\doctest\;CMake Files\external\doctest\scripts\;CMake Files\external\doctest\scripts\cmake\;CMake Files\cmake\;CMake Files\tests\;"/>
+		<Option virtualFolders="CMake Files\;CMake Files\Chapters\;CMake Files\Chapters\Chapter1\;CMake Files\Chapters\Chapter2\;CMake Files\Chapters\Chapter4\;CMake Files\Chapters\Chapter5\;CMake Files\Chapters\Chapter6\;CMake Files\Chapters\Chapter7\;CMake Files\Chapters\Chapter8\;CMake Files\Chapters\Chapter9\;CMake Files\external\;CMake Files\external\doctest\;CMake Files\external\doctest\scripts\;CMake Files\external\doctest\scripts\cmake\;CMake Files\cmake\;CMake Files\tests\;"/>
 		<Build>
 			<Target title="all">
 				<Option working_dir="D:/Program Files/ray_tracer_cpp/cmake-build-release/Chapters/Chapter1"/>
@@ -109,6 +109,9 @@
 		</Unit>
 		<Unit filename="D:/Program Files/ray_tracer_cpp/Chapters/Chapter8/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\Chapters\Chapter8\"/>
+		</Unit>
+		<Unit filename="D:/Program Files/ray_tracer_cpp/Chapters/Chapter9/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\Chapters\Chapter9\"/>
 		</Unit>
 		<Unit filename="D:/Program Files/ray_tracer_cpp/external/doctest/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\external\doctest\"/>

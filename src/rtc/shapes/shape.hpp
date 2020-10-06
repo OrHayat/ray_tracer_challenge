@@ -15,7 +15,9 @@ enum shape_type
     t_plane,
     t_disk,
     t_sphere,
-    t_cube
+    t_cube,
+    t_cylinder,
+    t_cone
 };
 
 struct shape{
