@@ -94,6 +94,8 @@ struct Scene {
                         continue;
                     }
                 }
+                float light_t=glm::length(dir_to_lightsource);
+                dir_to_lightsource=dir_to_lightsource/light_t;
                 ray shadow_ray(collision_comp.intersection_point+collision_comp.intersection_point_normal*0.005f,dir_to_lightsource);
                 bool shadow=false;
                 for(unsigned obj_id=0;obj_id<objects.size();++obj_id)
@@ -103,14 +105,14 @@ struct Scene {
 //                   if(col_val.has_value())
                     if(col_val.has_value())
                     {
-                        if(col_val.value()>0.04f&&(cur_light->type==light_type::directed_light||col_val.value()<=1.0f))
+                        if(col_val.value()>0.0005f&&(cur_light->type==light_type::directed_light||col_val.value()<=light_t))
                         {
                             shadow=true;
                             break;
                         }
                     }
                 }
-                if(!shadow) {
+                if(true) {
                     dir_to_lightsource=glm::normalize(dir_to_lightsource);
 
                     glm::vec3 intensity;
@@ -125,14 +127,14 @@ struct Scene {
                         }
                         case light_type::directed_light:
                         {
-                            intensity=cur_light->intensity*glm::dot(collision_comp.intersection_point_normal,cur_light->dir);
+                            intensity=cur_light->intensity*glm::dot(collision_comp.intersection_point_normal,-cur_light->dir);
                             break;
                         }
                         case light_type::spot_light:
                         {
                             float dist=glm::distance(cur_light->pos,collision_comp.intersection_point);
                             attenuation=1/(((cur_light->kq*dist)+cur_light->kl)*dist+cur_light->kc);
-                            intensity=cur_light->intensity*glm::dot(collision_comp.intersection_point_normal,cur_light->dir)*attenuation;
+                            intensity=cur_light->intensity*glm::dot(collision_comp.intersection_point_normal,-cur_light->dir)*attenuation;
                             break;
                         }
                     }

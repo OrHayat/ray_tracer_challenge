@@ -1,27 +1,26 @@
 //
-// Created by orhayat on 05/10/2020.
+// Created by orhayat on 07/10/2020.
 //
 
-#ifndef RAY_TRACER_CYLINDER_HPP
-#define RAY_TRACER_CYLINDER_HPP
+#ifndef RAY_TRACER_CONE_HPP
+#define RAY_TRACER_CONE_HPP
 
 #define GLM_FORCE_SWIZZLE
-
 #include <rtc/shapes/shape.hpp>
 #include <rtc/core/ray.hpp>
 #include <glm/gtx/string_cast.hpp>
 #include <iostream>
 
-
-struct cylinder:shape{
-    glm::vec3 p1;
-    glm::vec3 p2;
-    float radius;
-    glm::vec3 cylinder_axis;
-    bool infinite;
-    cylinder():p1(glm::vec3(0)),p2(glm::vec3(0,1,0)),radius(1.0f),cylinder_axis(glm::vec3(0,1,0)),infinite(false){
+struct cone:shape{
+    float alpha;
+//    glm::vec3 p1;
+//    glm::vec3 p2;
+//    float radius;
+    glm::vec3 cone_axis;
+//    bool infinite;
+    cone(){
 //        this->cylinder_axis=glm::normalize(p2-p1);
-        this->type=shape_type::t_cylinder;
+        this->type=shape_type::t_cone;
     }
 //    explicit sphere(float radius):center(glm::vec3(0)),radius(radius)
 //    {
@@ -38,6 +37,9 @@ struct cylinder:shape{
         glm::vec3 worldnormal=(glm::transpose(this->model_inv)*glm::vec4(object_normal,0)).xyz;
         return glm::normalize(worldnormal);
     }
+
+    //https://lousodrome.net/blog/light/2017/01/03/intersection-of-a-ray-and-a-cone/
+
     collision_data collide(ray r) override// collision_data collide(ray r)
     {
 //        glm::mat4 model_inv=glm::inverse(this->model);
@@ -47,7 +49,7 @@ struct cylinder:shape{
         r.dir=glm::normalize(new_dir);
 //        r=ray(new_pos,new_dir);
         //x1x,x=(-b(+,-)sqrt(b^2-4ac))/2a when dot(a,a)=1 and b=2*dot(r.dir,sphere to origin) then=x1,x2=-b(+,-)sqrt(b^2-c)
-        glm::vec3 tmp=r.dir-glm::dot(r.dir,this->cylinder_axis)* this->cylinder_axis;
+        glm::vec3 normalized_dir=glm::normalize(r.dir);
         float a=glm::dot(tmp,tmp);
         glm::vec3 delta_p=r.origin-this->p1;
         glm::vec3 tmp2=delta_p-glm::dot(delta_p,this->cylinder_axis)*this->cylinder_axis;
@@ -67,7 +69,7 @@ struct cylinder:shape{
             glm::vec3 tpos=r(t1);
             if(t1>0&&(int)(glm::sign(glm::dot(this->cylinder_axis,tpos- this->p1)))^(int)(glm::sign(glm::dot(this->cylinder_axis,tpos- this->p2)))!=0)
             {
-                        res.t.push_back(t1);
+                res.t.push_back(t1);
             }
 
             tpos=r(t2);
@@ -79,5 +81,4 @@ struct cylinder:shape{
         return res;
     }
 };
-
-#endif //RAY_TRACER_CYLINDER_HPP
+#endif //RAY_TRACER_CONE_HPP

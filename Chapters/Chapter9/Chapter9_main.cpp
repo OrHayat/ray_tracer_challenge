@@ -39,7 +39,7 @@ int main(int argc, char** argv)
     material mat_;
     mat_.ka=glm::vec4(0.15f,0.35f,0.7f,1.0f);
     mat_.kd=glm::vec4(0.35f,0.85f,0.7f,1.0f);
-    mat_.ks=glm::vec4(0,0.5,1,1);
+    mat_.ks=glm::vec4(1.0f,0.5,1,1);
     mat_.shininess=250.0f;
     sphere_->mat=mat_;
     disk_->mat=mat_;

@@ -40,18 +40,30 @@ struct sphere:shape{
         r.dir=new_dir;
 //        r=ray(new_pos,new_dir);
         //x1x,x=(-b(+,-)sqrt(b^2-4ac))/2a when dot(a,a)=1 and b=2*dot(r.dir,sphere to origin) then=x1,x2=-b(+,-)sqrt(b^2-c)
-        float a=glm::dot(r.dir,r.dir);
+//        float a=glm::dot(r.dir,r.dir);
         float b=glm::dot((r.dir),(r.origin-center));
         float c=glm::dot((r.origin-center),(r.origin-center))-radius*radius;
         collision_data res(*this);
-        float disc=b*b-a*c;
+        float disc=b*b-c;
         if(disc<0)
         {
             return res;
         }
         disc=std::sqrt(disc);
-        res.t.push_back((-b-disc)/a);
-        res.t.push_back((-b+disc)/a);
+        float tmp=-b-disc;
+        if(tmp>=0)
+        {
+            res.t.push_back(tmp);
+            tmp=-b+disc;
+            res.t.push_back(tmp);
+            return res;
+        }
+        tmp=-b+disc;
+        if(tmp>=0)
+        {
+            res.t.push_back(tmp);
+            return res;
+        }
         return res;
     }
 };
