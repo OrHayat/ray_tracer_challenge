@@ -17,6 +17,7 @@
 #include <rtc/shapes/sphere.hpp>
 #include <rtc/shapes/plane.hpp>
 #include <rtc/shapes/cube.hpp>
+#include <rtc/shapes/cone.hpp>
 
 #include <rtc/shapes/disk.hpp>
 int main(int argc, char** argv)
@@ -33,11 +34,12 @@ int main(int argc, char** argv)
 
 //    disk* disk_=new plane(glm::vec3(0),glm::vec3(0,1,0));
     plane* disk_=new plane(glm::vec3(-5.0f,-5.0f,-3.0f),glm::vec3(0,1.0f,0));//,2);
-    cube* c=new cube(glm::vec3(0,0,0),glm::vec3(0.5f));
+//    cube* c=new cube(glm::vec3(0,0,0),glm::vec3(0.5f));
+    cone* c=new cone();
     material mat_;
     mat_.ka=glm::vec4(0.15f,0.35f,0.7f,1.0f);
     mat_.kd=glm::vec4(0.35f,0.85f,0.7f,1.0f);
-    mat_.ks=glm::vec4(0,0.5,1,1);
+    mat_.ks=glm::vec4(1.0f,0.5,1,1);
     mat_.shininess=250.0f;
     sphere_->mat=mat_;
     disk_->mat=mat_;
@@ -80,7 +82,7 @@ int main(int argc, char** argv)
         res.data[i]=can.data[i];
     }
 //    res.draw_circle(glm::ivec2(450,350),30,glm::u8vec3(0,255,0),6);
-    int x=stbi_write_bmp("./chapter8.bmp",res.width,res.height,3,res.data);
+    int x=stbi_write_bmp("./chapter9.bmp",res.width,res.height,3,res.data);
     printf("x=%d\n",x);
 
     return 0;

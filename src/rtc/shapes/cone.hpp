@@ -12,13 +12,18 @@
 #include <iostream>
 
 struct cone:shape{
-    float alpha;
+//    float theta;
+    float cos_theta;
+    glm::vec3 apex_point;
+    float max_height;
+    float min_height;
+    bool is_infinite;
 //    glm::vec3 p1;
 //    glm::vec3 p2;
 //    float radius;
     glm::vec3 cone_axis;
-//    bool infinite;
-    cone(){
+//    bool infiite;
+    cone():cos_theta(0.95),apex_point(glm::vec3(0,2,0)),min_height(0),max_height(1),is_infinite(false){
 //        this->cylinder_axis=glm::normalize(p2-p1);
         this->type=shape_type::t_cone;
     }
@@ -30,10 +35,22 @@ struct cone:shape{
 //    {
 //        this->type=shape_type::t_sphere;
 //    };
+
+//https://www.shadertoy.com/view/MtcXWr
     glm::vec3 get_normal_at_point(glm::vec3 point)const override
     {
         glm::vec4 objectPoint = this->model_inv*glm::vec4(point,1);
-        glm::vec3 object_normal=/*2*?*/(point- this->p1-glm::dot(this->cylinder_axis,point-this->p1)*this->cylinder_axis);
+        glm::vec3 cp = point-this->apex_point;
+        float hs = glm::dot(cp,this->cone_axis);
+        if(hs<0)
+        {
+            hs=-1.0f;
+        }
+        else
+        {
+            hs=1.0f;
+        }
+        glm::vec3 object_normal =hs*glm::normalize(cp * glm::dot(this->cone_axis, cp) / dot(cp, cp) - this->cone_axis);
         glm::vec3 worldnormal=(glm::transpose(this->model_inv)*glm::vec4(object_normal,0)).xyz;
         return glm::normalize(worldnormal);
     }
@@ -49,12 +66,13 @@ struct cone:shape{
         r.dir=glm::normalize(new_dir);
 //        r=ray(new_pos,new_dir);
         //x1x,x=(-b(+,-)sqrt(b^2-4ac))/2a when dot(a,a)=1 and b=2*dot(r.dir,sphere to origin) then=x1,x2=-b(+,-)sqrt(b^2-c)
-        glm::vec3 normalized_dir=glm::normalize(r.dir);
-        float a=glm::dot(tmp,tmp);
-        glm::vec3 delta_p=r.origin-this->p1;
-        glm::vec3 tmp2=delta_p-glm::dot(delta_p,this->cylinder_axis)*this->cylinder_axis;
-        float b=glm::dot(tmp,tmp2);
-        float c=glm::dot(tmp2,tmp2)-this->radius*this->radius;
+
+        glm::vec3 co = r.origin - this->apex_point;
+        float costheta_sq=this->cos_theta*this->cos_theta;
+        float a = glm::pow(dot(r.dir,this->cone_axis),2)  -costheta_sq;;;
+        float b = 2.0f * (glm::dot(r.dir,this->cone_axis)*dot(co,this->cone_axis) - glm::dot(r.dir,co)*this->cos_theta*costheta_sq);
+        float c = glm::pow(glm::dot(co,this->cone_axis),2) - glm::dot(co,co)*costheta_sq;
+
         collision_data res(*this);
         float disc=b*b-a*c;
         if(disc<0)
@@ -64,19 +82,30 @@ struct cone:shape{
         disc=std::sqrt(disc);
         float t1=(-b-disc)/a;
         float t2=(-b+disc)/a;
-        if(! infinite)
+        if(t1>0) {
+            glm::vec3 p=r(t1);
+            glm::vec3 cp = p-this->apex_point;
+            float h = glm::dot(cp,this->cone_axis);
+            if(h>min_height&&h<=max_height) {
+                res.t.push_back(t1);
+            }
+            p=r(t2);
+            cp = p-this->apex_point;
+            h = glm::dot(cp,this->cone_axis);
+            if(h>min_height&&h<=max_height) {
+                res.t.push_back(t2);
+            }
+            return res;
+        }
+        if(t2>0)
         {
-            glm::vec3 tpos=r(t1);
-            if(t1>0&&(int)(glm::sign(glm::dot(this->cylinder_axis,tpos- this->p1)))^(int)(glm::sign(glm::dot(this->cylinder_axis,tpos- this->p2)))!=0)
-            {
-                res.t.push_back(t1);
-            }
-
-            tpos=r(t2);
-            if(t2>0&&(int)(glm::sign(glm::dot(this->cylinder_axis,tpos- this->p1)))^(int)(glm::sign(glm::dot(this->cylinder_axis,tpos- this->p2)))!=0)
-            {
-                res.t.push_back(t1);
-            }
+        glm::vec3 p=r(t2);
+        glm::vec3 cp = p-this->apex_point;
+        float h = glm::dot(cp,this->cone_axis);
+        if(h>min_height&&h<=max_height) {
+            res.t.push_back(t2);
+        }
+            return res;
         }
         return res;
     }

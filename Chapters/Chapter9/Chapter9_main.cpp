@@ -82,7 +82,7 @@ int main(int argc, char** argv)
         res.data[i]=can.data[i];
     }
 //    res.draw_circle(glm::ivec2(450,350),30,glm::u8vec3(0,255,0),6);
-    int x=stbi_write_bmp("./chapter7.bmp",res.width,res.height,3,res.data);
+    int x=stbi_write_bmp("./chapter9.bmp",res.width,res.height,3,res.data);
     printf("x=%d\n",x);
 
     return 0;

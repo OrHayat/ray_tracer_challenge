@@ -112,7 +112,7 @@ struct Scene {
                         }
                     }
                 }
-                if(true) {
+                if(!shadow) {
                     dir_to_lightsource=glm::normalize(dir_to_lightsource);
 
                     glm::vec3 intensity;
@@ -183,7 +183,7 @@ struct Scene {
         return  glm::vec3(0,0,0);
     }
 
-
+#define ANTIALIZE_COUNT 20
     Canvas<glm::vec3> render()
     {
         int nonzeros_pixels=0;
@@ -195,18 +195,23 @@ struct Scene {
             {
 //                std::cout<<"x="<<x<<" ,y= "<<y<<std::endl;
                 glm::vec3 tmp(0);
-//                for (unsigned int s = 0; s <4 ; ++s)
-//                {
-//                   tmp+=render_block(x+(float)s/2.0f,y+((float)(s%2)/2.0f),1,1,0);
-//                }
-//                tmp/=4;
-        if(x==330&&y==230)
-        {
-            tmp += render_block(x + (float) 0.5f, y + 0.5f, 1, 1, 1);
-        }
-        else {
+#ifdef USE_AA
+                for (unsigned int s = 0; s <ANTIALIZE_COUNT*ANTIALIZE_COUNT ; ++s)
+                {
+                   tmp+=render_block(x+(float)s/(float)ANTIALIZE_COUNT,y+((float)(s%ANTIALIZE_COUNT)/(float)ANTIALIZE_COUNT),1,1,0);
+                }
+                tmp/=(ANTIALIZE_COUNT*ANTIALIZE_COUNT);
+#else
             tmp += render_block(x + (float) 0.5f, y + 0.5f, 1, 1, 0);
-        }
+#endif
+#undef ANTIALIZE_COUNT
+#undef USE_AA
+                //        if(x==330&&y==230)
+//        {
+//            tmp += render_block(x + (float) 0.5f, y + 0.5f, 1, 1, 1);
+//        }
+//        else {
+//        }
                 res.set_pixel(x,y,glm::clamp(tmp*255.0f,glm::vec3(0.0f),glm::vec3(255.0f)));
             }
         }
