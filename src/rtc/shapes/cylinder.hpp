@@ -31,10 +31,10 @@ struct cylinder:shape{
 //    {
 //        this->type=shape_type::t_sphere;
 //    };
-    glm::vec3 get_normal_at_point(glm::vec3 point)const override
+    glm::vec3 get_normal_at_point(glm::vec3 point,const collision_data& cache)const override
     {
         glm::vec4 objectPoint = this->model_inv*glm::vec4(point,1);
-        glm::vec3 object_normal=/*2*?*/(point- this->p1-glm::dot(this->cylinder_axis,point-this->p1)*this->cylinder_axis);
+        glm::vec3 object_normal=(point- this->p1-glm::dot(this->cylinder_axis,point-this->p1)*this->cylinder_axis);
         glm::vec3 worldnormal=(glm::transpose(this->model_inv)*glm::vec4(object_normal,0)).xyz;
         return glm::normalize(worldnormal);
     }

@@ -23,11 +23,11 @@ struct sphere:shape{
     {
         this->type=shape_type::t_sphere;
     };
-    glm::vec3 get_normal_at_point(glm::vec3 point)const override
+    glm::vec3 get_normal_at_point(glm::vec3 point,const collision_data& cache)const override
     {
         glm::vec4 objectPoint = this->model_inv*glm::vec4(point,1);
 
-        glm::vec4 object_normal=glm::vec4(objectPoint.xyz()-center,0);
+        glm::vec4 object_normal=glm::vec4(objectPoint.xyz()-this->center,0);
         glm::vec3 worldnormal=(glm::transpose(this->model_inv)*object_normal).xyz;
         return glm::normalize(worldnormal);
     }

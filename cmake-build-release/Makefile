@@ -303,6 +303,19 @@ Chapter9\fast:
 .PHONY : Chapter9\fast
 
 #=============================================================================
+# Target rules for targets named Chapter10
+
+# Build rule for target.
+Chapter10: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 /nologo -$(MAKEFLAGS) Chapter10
+.PHONY : Chapter10
+
+# fast build rule for target.
+Chapter10\fast:
+	$(MAKE) $(MAKESILENT) -f Chapters\Chapter10\CMakeFiles\Chapter10.dir\build.make /nologo -$(MAKEFLAGS) Chapters\Chapter10\CMakeFiles\Chapter10.dir\build
+.PHONY : Chapter10\fast
+
+#=============================================================================
 # Target rules for targets named tests
 
 # Build rule for target.
@@ -439,6 +452,7 @@ help:
 	@echo ... rebuild_cache
 	@echo ... test
 	@echo ... Chapter1
+	@echo ... Chapter10
 	@echo ... Chapter2
 	@echo ... Chapter4
 	@echo ... Chapter5

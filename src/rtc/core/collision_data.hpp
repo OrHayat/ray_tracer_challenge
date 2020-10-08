@@ -14,7 +14,10 @@ struct ray;
 
 struct collision_data
 {
+    collision_data();
+
     std::vector<float> t;
+    float cache[3];
     shape* colided_shape= nullptr;
     collision_data(shape& colided_shape);//t(std::vector<float>()){}//positions(std::vector<glm::vec3>()){}
     collision_data(std::vector<float>t, shape& colided_shape);
@@ -32,7 +35,7 @@ struct  collision_computation
     glm::vec3 intersection_point_normal;
     bool inside;
     collision_computation(float t,shape& colided_shape,glm::vec3 intersection_point,glm::vec3 dir_from_intersection_to_eye,glm::vec3 intersection_point_normal,bool inside);
-    static collision_computation prepare_collision_computation(const ray &ray_from_eye,const float t,shape& collided_shape);
+    static collision_computation prepare_collision_computation(const ray &ray_from_eye,const float t,collision_data& collided_shape);
     //    static std::optional<struct collision_computation>   foo(const ray& r,const  collision_data& col_data);
     collision_computation()=delete;
 };

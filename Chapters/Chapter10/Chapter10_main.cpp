@@ -44,7 +44,7 @@ int main(int argc, char** argv)
     sphere_->mat=mat_;
     disk_->mat=mat_;
     c->mat=mat_;
-    c->mat.ka=glm::vec4(0.2,0.3,1.0f,1.0f);
+    c->mat.ka=glm::vec4(0.6,0.3,1.0f,1.0f);
     disk_->mat.ka=glm::vec4(0.0f,0,1.0f,1.0f);
     disk_->mat.kd=glm::vec4(0,1,1,1);
     disk_->mat.ks=glm::vec4(0,0.5,0.72,1);
@@ -57,10 +57,10 @@ int main(int argc, char** argv)
 //    sphere_->set_model((glm::translate(glm::mat4(),glm::vec3(0,0,0))*glm::scale(glm::mat4(),glm::vec3(1,1,1))));
 //    sphere_->model=(glm::translate(glm::mat4(),glm::vec3(2,0,0))*glm::scale(glm::mat4(),glm::vec3(3,3,3)));
 //    sphere_->model_inv=glm::inverse(sphere_->model);
-    s.objects.push_back(sphere_);
-    s.objects.push_back(disk_);
+    //s.objects.push_back(sphere_);
+   // s.objects.push_back(disk_);
     s.objects.push_back(c);
-    s.objects.push_back(sphere_2);
+   // s.objects.push_back(sphere_2);
     glm::vec3 light1_pos=glm::vec3(0,5.0f,4.0f);
     light* point_light1=light::make_point_light_ptr(light1_pos);
     point_light1->kc=1.2f;
@@ -70,7 +70,7 @@ int main(int argc, char** argv)
     light* point_light2=light::make_point_light_ptr(light2_pos);
     point_light2->intensity=glm::vec4(1.0f,1.0f,1.0f,1.0f);
     point_light2->kc=1.0f;
-    light* directional_light=light::make_directed_light_ptr(glm::vec3(1,0,0),glm::vec4(0,0,1,1));
+    light* directional_light=light::make_directed_light_ptr(glm::vec3(1,0,0),glm::vec4(1,0.5f,0,1));
     s.lights.push_back(point_light1);
     s.lights.push_back(directional_light);
     Canvas<glm::vec3> can= s.render();
@@ -82,7 +82,7 @@ int main(int argc, char** argv)
         res.data[i]=can.data[i];
     }
 //    res.draw_circle(glm::ivec2(450,350),30,glm::u8vec3(0,255,0),6);
-    int x=stbi_write_bmp("./chapter9.bmp",res.width,res.height,3,res.data);
+    int x=stbi_write_bmp("./chapter10.bmp",res.width,res.height,3,res.data);
     printf("x=%d\n",x);
 
     return 0;

@@ -217,6 +217,12 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
 //Value Computed by CMake
+Chapter10_BINARY_DIR:STATIC=D:/Program Files/ray_tracer_cpp/cmake-build-release/Chapters/Chapter10
+
+//Value Computed by CMake
+Chapter10_SOURCE_DIR:STATIC=D:/Program Files/ray_tracer_cpp/Chapters/Chapter10
+
+//Value Computed by CMake
 Chapter1_BINARY_DIR:STATIC=D:/Program Files/ray_tracer_cpp/cmake-build-release/Chapters/Chapter1
 
 //Value Computed by CMake
@@ -299,6 +305,9 @@ RTC_WITHOUT_COPYLEFT:BOOL=OFF
 
 //Compile chapter 1
 TUTORIALS_CHAPTER1:BOOL=ON
+
+//compile chapter 10
+TUTORIALS_CHAPTER10:BOOL=ON
 
 //Compile chapter 2
 TUTORIALS_CHAPTER2:BOOL=ON
@@ -445,7 +454,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_MT
 CMAKE_MT-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=12
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=13
 //Platform information initialized
 CMAKE_PLATFORM_INFO_INITIALIZED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_RC_COMPILER

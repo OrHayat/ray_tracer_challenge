@@ -33,6 +33,7 @@ option(TUTORIALS_CHAPTER6 "Compile chapter 6" ON)
 option(TUTORIALS_CHAPTER7 "Compile chapter 7" ON)
 option(TUTORIALS_CHAPTER8 "Compile chapter 8" ON)
 option(TUTORIALS_CHAPTER9 "Compile chapter 9" ON)
+option(TUTORIALS_CHAPTER10 "compile chapter 10" ON)
 
 
 # Store location of tutorial/shared directory
@@ -67,4 +68,7 @@ add_subdirectory(Chapter8)
 endif()
 if(TUTORIALS_CHAPTER9)
     add_subdirectory(Chapter9)
+endif()
+if(TUTORIALS_CHAPTER10)
+    add_subdirectory(Chapter10)
 endif()

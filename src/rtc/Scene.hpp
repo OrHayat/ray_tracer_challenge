@@ -158,7 +158,7 @@ struct Scene {
         }
         ray ray_from_eye = cameras[selected_camera].RayForPixel(x,y);
         float min_t=-1.0f;
-        collision_data* collided= nullptr;
+        collision_data collided;
         int max_id=-1;
         for(unsigned int i=0;i<objects.size();i++)
         {
@@ -171,13 +171,15 @@ struct Scene {
                 {
                     max_id=i;
                     min_t=cur_collision_time;
+                    collided=res;
                 }
             }
         }
         if(min_t>0.0005f) {
             collision_computation comp = collision_computation::prepare_collision_computation(ray_from_eye,
                                                                                   min_t,
-                                                                                  *this->objects.at(max_id));
+                                                                                  collided);
+                                                                                  //*this->objects.at(max_id));
             return this->shade_hit(comp);
         }
         return  glm::vec3(0,0,0);

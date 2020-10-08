@@ -22,7 +22,7 @@ struct cube:shape{
     }
 //    cube(float radius,const glm::vec3& center):center(center),radius(radius){};
 //http://blog.johnnovak.net/2016/10/22/the-nim-raytracer-project-part-4-calculating-box-normals/?utm_source=mybridge&utm_medium=blog&utm_campaign=read_more
-    glm::vec3 get_normal_at_point(glm::vec3 point)const override
+    glm::vec3 get_normal_at_point(glm::vec3 point,const collision_data& cache)const override
     {
         glm::vec4 objectPoint = this->model_inv*glm::vec4(point,1);
         glm::vec3 new_center=glm::abs(this->point_max- this->point_min)*0.5f;

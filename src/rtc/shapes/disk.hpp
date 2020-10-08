@@ -33,7 +33,7 @@ struct disk:shape{
     {
         this->type=shape_type::t_disk;
     }
-    glm::vec3 get_normal_at_point(glm::vec3 point)const override
+    glm::vec3 get_normal_at_point(glm::vec3 point,const collision_data& cache)const override
     {
         glm::vec4 objectPoint = this->model_inv*glm::vec4(point,1);
 

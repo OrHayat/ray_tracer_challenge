@@ -42,6 +42,7 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("D:/Program Files/ray_tracer_cpp/cmake-build-release/Chapters/Chapter7/cmake_install.cmake")
   include("D:/Program Files/ray_tracer_cpp/cmake-build-release/Chapters/Chapter8/cmake_install.cmake")
   include("D:/Program Files/ray_tracer_cpp/cmake-build-release/Chapters/Chapter9/cmake_install.cmake")
+  include("D:/Program Files/ray_tracer_cpp/cmake-build-release/Chapters/Chapter10/cmake_install.cmake")
 
 endif()
 
