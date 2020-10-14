@@ -40,7 +40,9 @@ struct  collision_computation
     float y;
     collision_computation(float t,shape& colided_shape,glm::vec3 intersection_point,glm::vec3 dir_from_intersection_to_eye
                           ,glm::vec3 intersection_point_normal,bool inside,glm::vec3 reflected_ray);
-    static collision_computation prepare_collision_computation(const ray &ray_from_eye,const float t,collision_data& collided_shape,collision_with_scene_result& xs,int hit_index);
+    static collision_computation prepare_collision_computation(const ray &ray_from_eye,const float t,collision_data& collided_shape
+                                                               ,collision_with_scene_result& xs,int hit_index,
+                                                               const std::vector<shape*>& scene_objects);
     //    static std::optional<struct collision_computation>   foo(const ray& r,const  collision_data& col_data);
     collision_computation()=delete;
 };

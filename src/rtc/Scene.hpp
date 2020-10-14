@@ -211,7 +211,8 @@ struct Scene {
                                                                                               min_t,
                                                                                               collided_shape_data,
                                                                                               collision_result,
-                                                                                              max_id);
+                                                                                              max_id,
+                                                                                              this->objects);
             //*this->objects.at(max_id));
             return this->shade_hit(comp,depth);
         }
