@@ -56,5 +56,11 @@ struct shape{
         this->model=model;
         this->model_inv=glm::inverse(model);
     }
+    uint32_t get_id(){return this->shape_id;}
+protected:
+    shape(int id):shape_id(id){};
+private:
+    uint32_t shape_id;
+
 };
 #endif //RAY_TRACER_SHAPE_HPP

@@ -17,7 +17,7 @@ struct cube:shape{
         glm::vec3 point_max;
     };
 //    cube():center(glm::vec3(0)),radius(1.0f){}
-    explicit cube(glm::vec3 min,glm::vec3 max):point_min(min),point_max(max){
+    explicit cube(int id,glm::vec3 min,glm::vec3 max):shape(id),point_min(min),point_max(max){
         this->type=shape_type::t_cube;
     }
 //    cube(float radius,const glm::vec3& center):center(center),radius(radius){};

@@ -173,6 +173,7 @@ struct Scene {
         ray ray_from_eye = cameras[selected_camera].RayForPixel(x,y);
         return shoot_ray(ray_from_eye,0);
     }
+
     glm::vec3 shoot_ray(ray & r,float depth)
     {
         float min_t=-1.0f;
@@ -205,10 +206,12 @@ struct Scene {
                 }
             }
         }*/
-        if(min_t>0.0005f) {
+        if(max_id>0) {
             collision_computation comp = collision_computation::prepare_collision_computation(r,
                                                                                               min_t,
-                                                                                              collided_shape_data);
+                                                                                              collided_shape_data,
+                                                                                              collision_result,
+                                                                                              max_id);
             //*this->objects.at(max_id));
             return this->shade_hit(comp,depth);
         }

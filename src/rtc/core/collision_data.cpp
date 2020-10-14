@@ -5,6 +5,11 @@
 #include <iostream>
 #include "collision_data.hpp"
 #include <rtc/shapes/shape.hpp>
+#include <rtc/Scene.hpp>
+#include <unordered_set>
+#include <set>
+#include <unordered_map>
+
 collision_data::collision_data( shape& colided_shape):t(std::vector<float>()),colided_shape(&colided_shape){}
 collision_data::collision_data(std::vector<float>t, shape& colided_shape):t(t),colided_shape(&colided_shape){}
 collision_data::collision_data(const collision_data& other):colided_shape(other.colided_shape),t(other.t){}
@@ -49,8 +54,42 @@ collision_computation::collision_computation(float t,
 {
 }
 
-collision_computation collision_computation::prepare_collision_computation(const ray& ray_from_eye,const float t,collision_data& collision_result)
+collision_computation collision_computation::prepare_collision_computation(const ray& ray_from_eye,const float t
+                                                                           ,collision_data& collision_result,collision_with_scene_result& xs,int hit_index,
+                                                                           const std::vector<shape*>& scene_objects)
 {
+//    std::set<uint32_t>collided_ids;
+//n1 is leaving index,n2 is entering index
+    std::unordered_map<uint32_t,uint32_t>collided_id_count;
+    float n1=1.0f,n2=1.0f;
+    for(int i=0;i<xs.data.size();i++)
+    {
+        if(i==hit_index)
+        {
+            for(unsigned int tmp_index=i-1;tmp_index>=0;tmp_index--)
+            {
+                auto counter_it=collided_id_count.find(xs.data[tmp_index].collided_shape->get_id());
+                if(counter_it->second%2==1)
+                {
+                    n1= scene_objects.at(counter_it->first)->mat.refractive_index;
+                    break;
+                }
+            }
+        }
+        collided_id_count[xs.data.at(i).collided_shape->get_id()]++;
+        if(i==hit_index)
+        {
+            for(unsigned int tmp_index=i-1;tmp_index>=0;tmp_index--)
+            {
+                auto counter_it=collided_id_count.find(xs.data[tmp_index].collided_shape->get_id());
+                if(counter_it->second%2==1)
+                {
+                    n2= scene_objects.at(counter_it->first)->mat.refractive_index;
+                    break;
+                }
+            }
+        }
+    }
     glm::vec3 intersection_point=ray_from_eye(t);
     glm::vec3 dir_from_intersection_to_eye=-ray_from_eye.dir;
     glm::vec3 intersection_point_normal=glm::normalize(collision_result.colided_shape->get_normal_at_point(intersection_point,collision_result));

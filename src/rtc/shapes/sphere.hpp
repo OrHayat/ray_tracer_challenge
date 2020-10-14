@@ -12,14 +12,14 @@
 struct sphere:shape{
     glm::vec3 center;
     float radius;
-    sphere():center(glm::vec3(0)),radius(1.0f){
+    sphere(int id):shape(id),center(glm::vec3(0)),radius(1.0f){
         this->type=shape_type::t_sphere;
     }
-    explicit sphere(float radius):center(glm::vec3(0)),radius(radius)
+    explicit sphere(int id,float radius):shape(id),center(glm::vec3(0)),radius(radius)
     {
         this->type=shape_type::t_sphere;
     }//initalzing sphere on center of world
-    sphere(float radius,const glm::vec3& center):center(center),radius(radius)
+    sphere(int id,float radius,const glm::vec3& center):shape(id),center(center),radius(radius)
     {
         this->type=shape_type::t_sphere;
     };
