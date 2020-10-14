@@ -38,12 +38,14 @@ collision_computation::collision_computation(float t,
                                              glm::vec3 intersection_point,
                                              glm::vec3 dir_from_intersection_to_eye,
                                              glm::vec3 intersection_point_normal,
-                                             bool inside):t(t),
+                                             bool inside,
+                                             glm::vec3 reflected_ray):t(t),
                                              collided_shape(collided_shape),
                                              intersection_point(intersection_point),
                                              dir_from_intersection_to_eye(dir_from_intersection_to_eye),
                                              intersection_point_normal(intersection_point_normal)
                                              ,inside(inside)
+                                             ,reflected_ray(reflected_ray)
 {
 }
 
@@ -58,5 +60,6 @@ collision_computation collision_computation::prepare_collision_computation(const
         intersection_point_normal=-intersection_point_normal;
         inside=true;
     }
-    return collision_computation(t,*collision_result.colided_shape,intersection_point,dir_from_intersection_to_eye,intersection_point_normal,inside);
+    glm::vec3 reflected_ray=glm::reflect(glm::normalize(ray_from_eye.dir),intersection_point_normal);
+    return collision_computation(t,*collision_result.colided_shape,intersection_point,dir_from_intersection_to_eye,intersection_point_normal,inside,reflected_ray);
 }

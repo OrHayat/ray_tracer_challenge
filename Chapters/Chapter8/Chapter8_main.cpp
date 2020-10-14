@@ -40,12 +40,14 @@ int main(int argc, char** argv)
     mat_.ks=glm::vec4(0,0.5,1,1);
     mat_.shininess=250.0f;
     sphere_->mat=mat_;
-    disk_->mat=mat_;
+    material mirror=material();
+    mirror.kr=glm::vec4(1.0f);
+    disk_->mat=mirror;
     c->mat=mat_;
     c->mat.ka=glm::vec4(0.2,0.3,1.0f,1.0f);
-    disk_->mat.ka=glm::vec4(0.0f,0,1.0f,1.0f);
-    disk_->mat.kd=glm::vec4(0,1,1,1);
-    disk_->mat.ks=glm::vec4(0,0.5,0.72,1);
+//    disk_->mat.ka=glm::vec4(0.0f,0,1.0f,1.0f);
+//    disk_->mat.kd=glm::vec4(0,1,1,1);
+//    disk_->mat.ks=glm::vec4(0,0.5,0.72,1);
     disk_->set_model(glm::mat4(1.0f));
     sphere_->set_model(glm::mat4(1.0f));
     sphere_2->set_model(glm::translate(glm::mat4(),glm::vec3(1,1,-4)));

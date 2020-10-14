@@ -19,9 +19,10 @@
 
 struct collision_with_scene_result_data
 {
+    collision_data col_data_cpy;
     float t;
     shape * collided_shape;
-    collision_with_scene_result_data(float t, shape* s):t(t),collided_shape(s){};
+    collision_with_scene_result_data(float t, shape* s,collision_data col_data_cpy):t(t),collided_shape(s),col_data_cpy(col_data_cpy){};
 };
 struct collision_with_scene_result
 {
@@ -38,7 +39,7 @@ struct Scene {
             collision_data d= this->objects.at(i)->collide(r);
             for(unsigned int j=0;j<d.t.size();++j)
             {
-                collision_with_scene_result_data cur_data(d.t[j],d.colided_shape);
+                collision_with_scene_result_data cur_data(d.t[j],d.colided_shape,d);
                 res.data.push_back(cur_data);
             }
         }
@@ -46,20 +47,22 @@ struct Scene {
             return a.t<b.t;
         });
         return res;
-
     };
     std::vector<shape*> objects;
     std::vector<Camera>cameras;
     std::vector<light*>lights;
     glm::vec4 I_ambient=glm::vec4(0);
-    int max_depth=50;
+    int max_depth=3;
     int selected_camera;
 
-    glm::vec3 shade_hit(const collision_computation& collision_comp)
+    glm::vec3 shade_hit(const collision_computation& collision_comp,float depth)
     {
             glm::vec4 ka=collision_comp.collided_shape.mat.ka;
             glm::vec4 kd=collision_comp.collided_shape.mat.kd;
             glm::vec4 ks=collision_comp.collided_shape.mat.ks;
+            glm::vec4 kr=collision_comp.collided_shape.mat.kr;
+            glm::vec4 kt=collision_comp.collided_shape.mat.kt;
+
 //            std::cout<<"ka="<<glm::to_string(ka)<<std::endl;
 //            std::cout<<"kd="<<glm::to_string(kd)<<std::endl;
 //            std::cout<<"ks="<<glm::to_string(ks)<<std::endl;
@@ -147,22 +150,49 @@ struct Scene {
                 }
             }
             resulting_color+=glm::vec3(ka.x*I_ambient.x,ka.y*I_ambient.y,ka.z*I_ambient.z);
+            if(kr.x>0||kr.y>0||kr.z>0) {
+                ray reflection_ray = ray(collision_comp.intersection_point + collision_comp.reflected_ray * 0.0001f,
+                                         collision_comp.reflected_ray);
+                glm::vec3 tmp = shoot_ray(reflection_ray, depth + 1);
+                resulting_color += glm::vec3(kr.x * tmp.x, kr.y * tmp.y, kr.z * tmp.z);
+            }
+            if(kt.x>0||kt.y>0||kt.z>0)
+            {
+
+            }
             return resulting_color;
         }
 
     glm::vec3 render_block(float x,float y,int block_size_x,int block_size_y,int depth)
     {
-        if(depth!=0)
+
+        if(depth>=this->max_depth)
         {
-            std::cout<<"debug block"<<std::endl;
+            return glm::vec3(0);
         }
         ray ray_from_eye = cameras[selected_camera].RayForPixel(x,y);
+        return shoot_ray(ray_from_eye,0);
+    }
+    glm::vec3 shoot_ray(ray & r,float depth)
+    {
         float min_t=-1.0f;
-        collision_data collided;
+        collision_data collided_shape_data;
         int max_id=-1;
+        collision_with_scene_result collision_result= scene_ray_collide(r);
+        for(unsigned int i=0;i<collision_result.data.size();i++)
+        {
+            float cur_collision_time=collision_result.data.at(i).t;
+            if((min_t<0)||(cur_collision_time<=min_t))
+            {
+                max_id=i;
+                min_t=cur_collision_time;
+                collided_shape_data=collision_result.data.at(i).col_data_cpy;
+            }
+        }
+        /*
         for(unsigned int i=0;i<objects.size();i++)
         {
-            collision_data res=objects.at(i)->collide(ray_from_eye);
+            collision_data res=objects.at(i)->collide(r);
             std::optional<float> collision_time=res.find_collision_value();
             float cur_collision_time=collision_time.value_or(-10000.0f);
             if(cur_collision_time>0)
@@ -174,13 +204,13 @@ struct Scene {
                     collided=res;
                 }
             }
-        }
+        }*/
         if(min_t>0.0005f) {
-            collision_computation comp = collision_computation::prepare_collision_computation(ray_from_eye,
-                                                                                  min_t,
-                                                                                  collided);
-                                                                                  //*this->objects.at(max_id));
-            return this->shade_hit(comp);
+            collision_computation comp = collision_computation::prepare_collision_computation(r,
+                                                                                              min_t,
+                                                                                              collided_shape_data);
+            //*this->objects.at(max_id));
+            return this->shade_hit(comp,depth);
         }
         return  glm::vec3(0,0,0);
     }

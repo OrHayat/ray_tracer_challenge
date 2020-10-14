@@ -13,6 +13,7 @@ struct material {
     glm::vec4 kr=glm::vec4(0);;
     glm::vec4 kt=glm::vec4(0);;
     float shininess=0.0f;
+    float refractive_index=1.0f;
 };
 
 

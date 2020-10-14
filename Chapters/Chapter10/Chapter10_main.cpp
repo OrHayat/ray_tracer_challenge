@@ -44,6 +44,7 @@ int main(int argc, char** argv)
     sphere_->mat=mat_;
     disk_->mat=mat_;
     c->mat=mat_;
+    c->set_model(glm::scale(glm::mat4(1.0f),glm::vec3(1,2,1)));
     c->mat.ka=glm::vec4(0.6,0.3,1.0f,1.0f);
     disk_->mat.ka=glm::vec4(0.0f,0,1.0f,1.0f);
     disk_->mat.kd=glm::vec4(0,1,1,1);
