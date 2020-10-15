@@ -20,6 +20,8 @@
 #include <rtc/shapes/cylinder.hpp>
 
 #include <rtc/shapes/disk.hpp>
+int id=0;
+
 int main(int argc, char** argv)
 {
     Scene s;
@@ -29,22 +31,24 @@ int main(int argc, char** argv)
     s.I_ambient=glm::vec4(0.6f,0.7f,0.7f,1.0f);
     s.selected_camera=0;
     s.cameras.push_back(cam);
-    sphere* sphere_= new sphere(1.5,glm::vec3(-1.0f));
-    sphere* sphere_2= new sphere();
+    sphere* sphere_= new sphere(id++,1.5,glm::vec3(-1.0f));
+    sphere* sphere_2= new sphere(id++);
 
 //    disk* disk_=new plane(glm::vec3(0),glm::vec3(0,1,0));
-    plane* disk_=new plane(glm::vec3(-5.0f,-5.0f,-3.0f),glm::vec3(0,1.0f,0));//,2);
+    plane* disk_=new plane(id++,glm::vec3(-5.0f,-5.0f,-3.0f),glm::vec3(0,1.0f,0));//,2);
 //    cube* c=new cube(glm::vec3(0,0,0),glm::vec3(0.5f));
-    cylinder* c=new cylinder();
+    cylinder* c=new cylinder(id++);
     material mat_;
-    mat_.ka=glm::vec4(0.15f,0.35f,0.7f,1.0f);
-    mat_.kd=glm::vec4(0.35f,0.85f,0.7f,1.0f);
+    mat_.ka=glm::vec4(1.0f,0.55f,0.27f,1.0f);
+    mat_.kd=glm::vec4(0.65f,0.85f,0.7f,1.0f);
     mat_.ks=glm::vec4(1.0f,0.5,1,1);
     mat_.shininess=250.0f;
     sphere_->mat=mat_;
     disk_->mat=mat_;
     c->mat=mat_;
-    c->mat.ka=glm::vec4(0.2,0.3,1.0f,1.0f);
+//    c->mat.ka=glm::vec4(0.2,0.3,0.0f,1.0f);
+    c->mat.kt=glm::vec4(0.9f,0.9f,0.9f,1.0f);
+    c->mat.refractive_index=1.25;
     disk_->mat.ka=glm::vec4(0.0f,0,1.0f,1.0f);
     disk_->mat.kd=glm::vec4(0,1,1,1);
     disk_->mat.ks=glm::vec4(0,0.5,0.72,1);

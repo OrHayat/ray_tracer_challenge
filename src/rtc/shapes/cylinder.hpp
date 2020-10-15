@@ -65,13 +65,13 @@ struct cylinder:shape{
         if(! infinite)
         {
             glm::vec3 tpos=r(t1);
-            if(t1>0&&(int)(glm::sign(glm::dot(this->cylinder_axis,tpos- this->p1)))^(int)(glm::sign(glm::dot(this->cylinder_axis,tpos- this->p2)))!=0)
+            if(t1>0&&((int)(glm::sign(glm::dot(this->cylinder_axis,tpos- this->p1))))^((int)(glm::sign(glm::dot(this->cylinder_axis,tpos- this->p2)))!=0))
             {
                         res.t.push_back(t1);
             }
 
             tpos=r(t2);
-            if(t2>0&&(int)(glm::sign(glm::dot(this->cylinder_axis,tpos- this->p1)))^(int)(glm::sign(glm::dot(this->cylinder_axis,tpos- this->p2)))!=0)
+            if(t2>0&&((int)(glm::sign(glm::dot(this->cylinder_axis,tpos- this->p1))))^((int)(glm::sign(glm::dot(this->cylinder_axis,tpos- this->p2))))!=0)
             {
                 res.t.push_back(t1);
             }

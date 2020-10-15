@@ -55,6 +55,28 @@ struct Scene {
     int max_depth=20;
     int selected_camera;
 
+    float Schlick(collision_computation comp)
+    {
+        float cos=glm::dot(comp.dir_from_intersection_to_eye,comp.intersection_point_normal);
+            // cosine of the angle between the eye and normal vectors
+            // total internal reflection can only ocurr if n1 > n2
+            if (comp.n1>comp.n2)
+            {
+                float const n = comp.n1/comp.n2;
+                float const sin2T = n * n * (1.0f - (cos * cos));
+                if (sin2T > 1.f)
+                {
+                    return 1.f;
+                }
+                // compute cosine of theta using trig identity
+                float const cosT = std::sqrtf(1.f - sin2T);
+                // when n1 > n2 use cosine of theta instead
+                cos = cosT;
+            }
+
+            float const r0 = std::powf((comp.n1-comp.n2) / (comp.n1+comp.n2), 2.f);
+            return r0 + ((1.0f - r0) * std::powf(1.f - cos, 5.f));
+        }
     glm::vec3 shade_hit(const collision_computation& collision_comp,float depth)
     {
             glm::vec4 ka=collision_comp.collided_shape.mat.ka;
@@ -153,12 +175,18 @@ struct Scene {
 //                glm::vec3 I lights.at(i)->get_lighting_from(intersection_point);
                 }
             }
+
             resulting_color+=glm::vec3(ka.x*I_ambient.x,ka.y*I_ambient.y,ka.z*I_ambient.z);
+            float reflctance=1.0f;
+            if((kr.x>0||kr.y>0||kr.z>0)&&(kt.x>0||kt.y>0||kt.z>0))
+            {
+                reflctance=Schlick(collision_comp);
+            }
             if(kr.x>0||kr.y>0||kr.z>0) {
                 ray reflection_ray = ray(collision_comp.intersection_point + collision_comp.reflected_ray * 0.0001f,
                                          collision_comp.reflected_ray);
                 glm::vec3 tmp = shoot_ray(reflection_ray, depth + 1);
-                resulting_color += glm::vec3(kr.x * tmp.x, kr.y * tmp.y, kr.z * tmp.z);
+                resulting_color += reflctance*glm::vec3(kr.x * tmp.x, kr.y * tmp.y, kr.z * tmp.z);
             }
             if(kt.x>0||kt.y>0||kt.z>0)
             {
@@ -171,10 +199,8 @@ struct Scene {
                     glm::vec3 const direction = (collision_comp.intersection_point_normal * ((nRatio * cosI) - cosT)) - (collision_comp.dir_from_intersection_to_eye * nRatio);
                     ray  refractedRay(collision_comp.intersection_point+direction*0.0001f, direction);
                     glm::vec3 tmp = shoot_ray(refractedRay, depth + 1);
-//                    resulting_color += glm::vec3(kt.x * tmp.x, kt.y * tmp.y, kt.z * tmp.z);
+                    resulting_color += reflctance*glm::vec3(kt.x * tmp.x, kt.y * tmp.y, kt.z * tmp.z);
                 }
-
-
             }
             return resulting_color;
         }
