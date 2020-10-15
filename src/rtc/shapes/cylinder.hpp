@@ -19,7 +19,7 @@ struct cylinder:shape{
     float radius;
     glm::vec3 cylinder_axis;
     bool infinite;
-    cylinder():p1(glm::vec3(0)),p2(glm::vec3(0,1,0)),radius(1.0f),cylinder_axis(glm::vec3(0,1,0)),infinite(false){
+    cylinder(int id):shape(id),p1(glm::vec3(0)),p2(glm::vec3(0,1,0)),radius(1.0f),cylinder_axis(glm::vec3(0,1,0)),infinite(false){
 //        this->cylinder_axis=glm::normalize(p2-p1);
         this->type=shape_type::t_cylinder;
     }

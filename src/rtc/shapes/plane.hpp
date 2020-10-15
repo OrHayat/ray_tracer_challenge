@@ -12,7 +12,7 @@ struct plane:shape{
     glm::vec4 params;//ax+by+cz+d=0
     glm::vec3 origin;
     glm::vec3 normal;
-    explicit plane(glm::vec4 params):params(params){
+    plane(int id,glm::vec4 params):shape(id),params(params){
         this->type=shape_type::t_plane;
         assert(params.x!=0||params.y!=0||params.z!=0);
         this->normal=glm::normalize(params.xyz());
@@ -29,7 +29,7 @@ struct plane:shape{
             this->origin=glm::vec3(0,0,-params[3]/params[2]);
         }
     }//initalzing sphere on center of world
-    plane(glm::vec3 origin,glm::vec3 normal):params(normal,-glm::dot(origin,normal)),origin(origin),normal(glm::normalize(normal))
+    plane(int id,glm::vec3 origin,glm::vec3 normal):shape(id),params(normal,-glm::dot(origin,normal)),origin(origin),normal(glm::normalize(normal))
     {
         this->type=shape_type::t_plane;
     }

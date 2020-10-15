@@ -29,7 +29,7 @@ struct disk:shape{
 //            this->origin=glm::vec3(0,0,-params[3]/params[2]);
 //        }
 //    }//initalzing sphere on center of world
-    disk(glm::vec3 origin,glm::vec3 normal,float radius):params(normal,-glm::dot(origin,normal)),origin(origin),normal(glm::normalize(normal)),radius(radius)
+    disk(int id,glm::vec3 origin,glm::vec3 normal,float radius):shape(id),params(normal,-glm::dot(origin,normal)),origin(origin),normal(glm::normalize(normal)),radius(radius)
     {
         this->type=shape_type::t_disk;
     }

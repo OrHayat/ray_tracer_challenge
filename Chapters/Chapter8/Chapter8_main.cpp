@@ -19,6 +19,9 @@
 #include <rtc/shapes/cube.hpp>
 
 #include <rtc/shapes/disk.hpp>
+int id=0;
+int alloc_id()
+{return id++;}
 int main(int argc, char** argv)
 {
     Scene s;
@@ -28,12 +31,12 @@ int main(int argc, char** argv)
     s.I_ambient=glm::vec4(0.6f,0.7f,0.7f,1.0f);
     s.selected_camera=0;
     s.cameras.push_back(cam);
-    sphere* sphere_= new sphere(1.5,glm::vec3(-1.0f));
-    sphere* sphere_2= new sphere();
+    sphere* sphere_= new sphere(alloc_id(),1.5,glm::vec3(-1.0f));
+    sphere* sphere_2= new sphere(alloc_id());
 
 //    disk* disk_=new plane(glm::vec3(0),glm::vec3(0,1,0));
-    plane* disk_=new plane(glm::vec3(-5.0f,-5.0f,-3.0f),glm::vec3(0,1.0f,0));//,2);
-    cube* c=new cube(glm::vec3(0,0,0),glm::vec3(0.5f));
+    plane* disk_=new plane(alloc_id(),glm::vec3(-5.0f,-5.0f,-3.0f),glm::vec3(0,1.0f,0));//,2);
+    cube* c=new cube(alloc_id(),glm::vec3(0,0,0),glm::vec3(0.5f));
     material mat_;
     mat_.ka=glm::vec4(0.15f,0.35f,0.7f,1.0f);
     mat_.kd=glm::vec4(0.35f,0.85f,0.7f,1.0f);

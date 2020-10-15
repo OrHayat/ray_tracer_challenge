@@ -20,7 +20,7 @@ struct cone:shape{
 //    float radius;
     glm::vec3 cone_axis;
 //    bool infiite;
-    cone():pa(glm::vec3(0,1,0)),pb(glm::vec3(0)),radius_a(0.5),radius_b(0.2){//:cos_theta(0.955),apex_point(glm::vec3(0,1,1)),min_height(0),max_height(0),cone_axis(glm::vec3(0,1,0)),is_infinite(true){
+    cone(int id):shape(id),pa(glm::vec3(0,1,0)),pb(glm::vec3(0)),radius_a(0.5),radius_b(0.2){//:cos_theta(0.955),apex_point(glm::vec3(0,1,1)),min_height(0),max_height(0),cone_axis(glm::vec3(0,1,0)),is_infinite(true){
 //        this->cylinder_axis=glm::normalize(p2-p1);
         this->type=shape_type::t_cone;
     }
