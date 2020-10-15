@@ -100,22 +100,27 @@ struct Scene {
                 float light_t=glm::length(dir_to_lightsource);
                 dir_to_lightsource=dir_to_lightsource/light_t;
                 ray shadow_ray(collision_comp.intersection_point+collision_comp.intersection_point_normal*0.005f,dir_to_lightsource);
-                bool shadow=false;
-                for(unsigned obj_id=0;obj_id<objects.size();++obj_id)
+                collision_with_scene_result shadow_ray_collision=scene_ray_collide(shadow_ray);
+                glm::vec4 shadow=glm::vec4(1.0f);
+                for(unsigned intersection_id=0;intersection_id<shadow_ray_collision.data.size();++intersection_id)
                 {
-                    collision_data shadow_ray_collision=this->objects.at(obj_id)->collide(shadow_ray);
-                    std::optional<float>col_val= shadow_ray_collision.find_collision_value();
-//                   if(col_val.has_value())
-                    if(col_val.has_value())
+//                    if(shadow_ray_collision.data.at(intersection_id).collided_shape->id==collision_comp.collided_shape.id)
+//                    {
+//                        continue;
+//                    }
+                        float col_val=shadow_ray_collision.data.at(intersection_id).t;
                     {
-                        if(col_val.value()>0.0005f&&(cur_light->type==light_type::directed_light||col_val.value()<=light_t))
+                        if(col_val>0.0005f&&(cur_light->type==light_type::directed_light||col_val<=light_t))
                         {
-                            shadow=true;
-                            break;
+                            glm::vec4 tmp=shadow_ray_collision.data.at(intersection_id).collided_shape->mat.kt;
+                            shadow.x*=tmp.x;
+                            shadow.y*=tmp.y;
+                            shadow.z*=tmp.z;
+//                            shadow=true;
                         }
                     }
                 }
-                if(!shadow) {
+                if(true) {
                     dir_to_lightsource=glm::normalize(dir_to_lightsource);
 
                     glm::vec3 intensity;
@@ -141,11 +146,10 @@ struct Scene {
                             break;
                         }
                     }
-                    resulting_color += glm::vec3(intensity.x*kd.x,intensity.y*kd.y,intensity.z*kd.z) * glm::dot(collision_comp.intersection_point_normal, dir_to_lightsource);//diffuse
-
+                    resulting_color += glm::vec3(shadow.x*intensity.x*kd.x,shadow.y*intensity.y*kd.y,shadow.z*intensity.z*kd.z) * glm::dot(collision_comp.intersection_point_normal, dir_to_lightsource);//diffuse
                     glm::vec3 reflected_light_dir= glm::normalize(glm::reflect(-dir_to_lightsource,collision_comp.intersection_point_normal));
                     float specular_cos_theta=glm::dot(collision_comp.dir_from_intersection_to_eye,reflected_light_dir);
-                    resulting_color+=attenuation*glm::vec3(intensity.x*ks.x,intensity.y*ks.y,intensity.z*ks.z)*glm::pow(specular_cos_theta,collision_comp.collided_shape.mat.shininess);
+                    resulting_color+=attenuation*glm::vec3(shadow.x*intensity.x*ks.x,shadow.y*intensity.y*ks.y,shadow.z*intensity.z*ks.z)*glm::pow(specular_cos_theta,collision_comp.collided_shape.mat.shininess);
 //                glm::vec3 I lights.at(i)->get_lighting_from(intersection_point);
                 }
             }
@@ -232,7 +236,7 @@ struct Scene {
 #define ANTIALIZE_COUNT 20
     Canvas<glm::vec3> render()
     {
-        for(int i=0;i<objects.size();i++)
+        for(unsigned int i=0;i<objects.size();i++)
         {
             objects.at(i)->id=i;
         }
