@@ -44,10 +44,12 @@ int main(int argc, char** argv)
     mat_.shininess=250.0f;
     sphere_->mat=mat_;
     material mirror=material();
-    mirror.kr=glm::vec4(1.0f);
+    mirror.kr=glm::vec4(0.6f);
     disk_->mat=mirror;
-    c->mat=mat_;
-    c->mat.ka=glm::vec4(0.2,0.3,1.0f,1.0f);
+    c->mat=material();
+    c->mat.refractive_index=1.5f;
+    c->mat.kt=glm::vec4(glm::vec3(0.9f),1.0f);
+    c->mat.kd=glm::vec4(1.0,0.1,0.2f,1.0f);
 //    disk_->mat.ka=glm::vec4(0.0f,0,1.0f,1.0f);
 //    disk_->mat.kd=glm::vec4(0,1,1,1);
 //    disk_->mat.ks=glm::vec4(0,0.5,0.72,1);

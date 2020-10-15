@@ -52,7 +52,7 @@ struct Scene {
     std::vector<Camera>cameras;
     std::vector<light*>lights;
     glm::vec4 I_ambient=glm::vec4(0);
-    int max_depth=3;
+    int max_depth=20;
     int selected_camera;
 
     glm::vec3 shade_hit(const collision_computation& collision_comp,float depth)
@@ -158,14 +158,24 @@ struct Scene {
             }
             if(kt.x>0||kt.y>0||kt.z>0)
             {
+                float const nRatio = collision_comp.n1/collision_comp.n2;
+                float const cosI =glm::dot(collision_comp.intersection_point,collision_comp.intersection_point_normal);
+                float const sin2T = (nRatio * nRatio) * (1.0f - (cosI * cosI));
+                if (!(sin2T > 1.0f))
+                {
+                    float const cosT = glm::sqrt(1.0f - sin2T);
+                    glm::vec3 const direction = (collision_comp.intersection_point_normal * ((nRatio * cosI) - cosT)) - (collision_comp.dir_from_intersection_to_eye * nRatio);
+                    ray  refractedRay(collision_comp.intersection_point+direction*0.0001f, direction);
+                    glm::vec3 tmp = shoot_ray(refractedRay, depth + 1);
+//                    resulting_color += glm::vec3(kt.x * tmp.x, kt.y * tmp.y, kt.z * tmp.z);
+                }
+
 
             }
             return resulting_color;
         }
-
     glm::vec3 render_block(float x,float y,int block_size_x,int block_size_y,int depth)
     {
-
         if(depth>=this->max_depth)
         {
             return glm::vec3(0);
