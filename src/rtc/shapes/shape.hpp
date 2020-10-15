@@ -56,5 +56,6 @@ struct shape{
         this->model=model;
         this->model_inv=glm::inverse(model);
     }
+    int id;
 };
 #endif //RAY_TRACER_SHAPE_HPP

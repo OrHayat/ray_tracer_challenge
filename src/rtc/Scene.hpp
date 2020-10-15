@@ -208,7 +208,11 @@ struct Scene {
         if(min_t>0.0005f) {
             collision_computation comp = collision_computation::prepare_collision_computation(r,
                                                                                               min_t,
-                                                                                              collided_shape_data);
+                                                                                              collided_shape_data,
+                                                                                              max_id,
+                                                                                              collision_result,
+                                                                                              this->objects
+                                                                                              );
             //*this->objects.at(max_id));
             return this->shade_hit(comp,depth);
         }
@@ -218,6 +222,10 @@ struct Scene {
 #define ANTIALIZE_COUNT 20
     Canvas<glm::vec3> render()
     {
+        for(int i=0;i<objects.size();i++)
+        {
+            objects.at(i)->id=i;
+        }
         int nonzeros_pixels=0;
 //        std::cout<<"selected camera is"<<selected_camera<<"out of"<<cameras.size()<<"cameras"<<std::endl;
         Canvas<glm::vec3> res(cameras[selected_camera].image_width,cameras[selected_camera].image_height);

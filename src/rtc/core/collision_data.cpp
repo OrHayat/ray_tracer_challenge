@@ -5,6 +5,7 @@
 #include <iostream>
 #include "collision_data.hpp"
 #include <rtc/shapes/shape.hpp>
+#include "rtc/Scene.hpp"
 collision_data::collision_data( shape& colided_shape):t(std::vector<float>()),colided_shape(&colided_shape){}
 collision_data::collision_data(std::vector<float>t, shape& colided_shape):t(t),colided_shape(&colided_shape){}
 collision_data::collision_data(const collision_data& other):colided_shape(other.colided_shape),t(other.t){}
@@ -49,8 +50,15 @@ collision_computation::collision_computation(float t,
 {
 }
 
-collision_computation collision_computation::prepare_collision_computation(const ray& ray_from_eye,const float t,collision_data& collision_result)
+collision_computation collision_computation::prepare_collision_computation(const ray& ray_from_eye,
+                                                                           const float t,
+                                                                           collision_data& collision_result,
+                                                                           int collided_mesh_index,
+                                                                           collision_with_scene_result& collision_with_scene,
+                                                                           const std::vector<shape*>& objects
+                                                                           )
 {
+    float n1=1.0f,n2=1.0f;
     glm::vec3 intersection_point=ray_from_eye(t);
     glm::vec3 dir_from_intersection_to_eye=-ray_from_eye.dir;
     glm::vec3 intersection_point_normal=glm::normalize(collision_result.colided_shape->get_normal_at_point(intersection_point,collision_result));
